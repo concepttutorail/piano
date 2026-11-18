@@ -1,0 +1,9 @@
+# Twinkle Twinkle Little Star
+clef: treble
+
+C4 C4 G4 G4 | A4 A4 G4:h |
+F4 F4 E4 E4 | D4 D4 C4:h |
+G4 G4 F4 F4 | E4 E4 D4:h |
+G4 G4 F4 F4 | E4 E4 D4:h |
+C4 C4 G4 G4 | A4 A4 G4:h |
+F4 F4 E4 E4 | D4 D4 C4:h |
