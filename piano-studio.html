@@ -880,7 +880,7 @@ function openScroll(){
 <label class="set">Piano input delay <input type="range" id="scLag" min="0" max="250" step="10" value="${S.micLag}"> <span id="scLagV">${S.micLag} ms</span> <span class="small">If the result says you are always late on the real piano, raise this.</span></label>
 </div>
 <div class="row"><button class="pri" id="scLevel">Use level L${G.lv} · ${d.t}</button></div>
-<h3>Songs folder</h3>${libHTML()}
+${webHTML()}${WEB.on&&PHONE?'':'<h3>Songs folder</h3>'+libHTML()}
 <h3>Or load one file</h3>
 <input type="file" id="scFile" accept=".md,.txt">
 <div class="row" id="scSong">${sg?`<span>Loaded: <b>${sg.title||'Song'}</b> · ${sg.notes.filter(x=>!x.rest).length} notes</span><button class="pri" id="scPlay">Play song</button>`:''}</div>
@@ -910,7 +910,7 @@ Line starting with # = title</pre>
   $('scHold').onchange=e=>{S.tHold=e.target.checked;saveS()};
   $('scHoldMic').onchange=e=>{S.tHoldMic=e.target.checked;saveS()};
   $('scLag').oninput=e=>{S.micLag=+e.target.value;saveS();$('scLagV').textContent=S.micLag+' ms'};
-  libBind();
+  libBind();webBind();
   if(sg)$('scPlay').onclick=()=>{close('ovScroll');startScroll('song')};
   $('scNames').onchange=e=>{S.staffNames=e.target.checked;saveS();if(G.mode==='scroll')draw()};
   $('scHint').onchange=e=>{S.keyHint=e.target.checked;saveS();if(G.mode==='scroll')scrollTarget()};
@@ -1045,6 +1045,29 @@ Late     ${t.late}
 Missed   ${t.miss}${S.tHold||S.tHoldMic?`\nShort hold ${t.short}`:''}
 Wrong key ${t.wrong}</pre><p class="small">${tip}${t.ok+t.early+t.late&&t.ok/(t.ok+t.early+t.late)>=.8&&S.tPct<100?' Try a faster speed next.':''}</p>`;
 }
+
+// ---------- songs on the web site (GitHub Pages: <repo>/songs/*.md) ----------
+const WEB={on:/\.github\.io$/i.test(location.hostname),files:null,msg:'',busy:false};
+async function webScan(){if(WEB.busy)return;WEB.busy=true;WEB.msg='';
+  try{const owner=location.hostname.split('.')[0],repo=location.pathname.split('/').filter(Boolean)[0]||'';
+    const r=await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/songs`,{cache:'no-store'});
+    if(r.status===404){WEB.files=[]}else{if(!r.ok)throw new Error('error '+r.status);
+      WEB.files=(await r.json()).filter(f=>f.type==='file'&&/\.(md|txt)$/i.test(f.name)).map(f=>({name:f.name,url:f.download_url})).sort((a,b)=>a.name.localeCompare(b.name))}
+  }catch(e){WEB.files=[];WEB.msg='Could not read the songs list ('+e.message+'). Check the internet, then press ↻.'}
+  WEB.busy=false;if($('ovScroll').classList.contains('show'))openScroll()}
+async function webLoad(f){const txt=await (await fetch(f.url,{cache:'no-store'})).text();const song=parseSong(txt);
+  if(!song.title)song.title=f.name.replace(/\.(md|txt)$/i,'');S.lastWeb=f.name;saveS();
+  if(!song.notes.some(x=>!x.rest))return null;SC.song=song;store('song',{txt,name:f.name});return song}
+function webHTML(){if(!WEB.on)return '';
+  if(WEB.files===null){webScan();return '<h3>Songs</h3><p class="small">Loading songs…</p>'}
+  if(!WEB.files.length)return `<h3>Songs</h3><p class="small">${WEB.msg||'No songs yet. On GitHub, upload .md files into a folder named "songs".'}</p><div class="row"><button id="wbScan">↻ Look again</button></div>`;
+  return `<h3>Songs</h3><div class="row"><select id="wbSel">${WEB.files.map(f=>`<option value="${f.name}" ${S.lastWeb===f.name?'selected':''}>${songLabel(f.name)}</option>`).join('')}</select>
+<button class="pri" id="wbPlay">▶ Play</button><button id="wbScan">↻</button></div><p class="small" id="wbMsg">${WEB.msg||`${WEB.files.length} song${WEB.files.length===1?'':'s'}. New song: upload a .md file to the songs folder on GitHub, wait a minute, press ↻.`}</p>`}
+function webBind(){if(!WEB.on)return;
+  if($('wbScan'))$('wbScan').onclick=()=>{WEB.files=null;openScroll()};
+  if($('wbPlay'))$('wbPlay').onclick=async()=>{const f=WEB.files.find(x=>x.name===$('wbSel').value);try{const sg=await webLoad(f);
+    if(!sg){$('wbMsg').textContent='No notes found in '+f.name;return}
+    close('ovScroll');startScroll('song');if(sg.bad.length)fb('Skipped (not understood): '+sg.bad.slice(0,8).join(' '),'bad')}catch(e){$('wbMsg').textContent='Could not load '+f.name+'. Press ↻.'}}}
 
 // ---------- songs folder ----------
 const LIB={dir:null,files:[],perm:'none',unsupported:!window.showDirectoryPicker};
