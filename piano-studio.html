@@ -726,6 +726,10 @@ function yin(b,sr){
   const a=d[tau-1]??d[tau],c=d[tau+1]??d[tau],den=a+c-2*d[tau];const sh=den?(a-c)/(2*den):0;
   return {f:sr/(tau+sh),q:d[tau]};
 }
+// strength of one frequency in the buffer (Goertzel-style DFT, Hann window)
+function gz(b,f,sr){let re=0,im=0;const n=b.length,w=2*Math.PI*f/sr,k=2*Math.PI/(n-1);for(let i=0;i<n;i++){const v=b[i]*(.5-.5*Math.cos(k*i));re+=v*Math.cos(w*i);im-=v*Math.sin(w*i)}return Math.hypot(re,im)}
+// true pitch is one octave lower if there is energy at f/2 and 3f/2
+function octLow(b,f,sr){return (gz(b,f/2,sr)+gz(b,1.5*f,sr))/Math.max(gz(b,f,sr),1e-9)>.11}
 function analyse(){
   if(!MIC.on)return;MIC.an.getFloatTimeDomainData(MIC.buf);
   let r=0;for(const v of MIC.buf)r+=v*v;r=Math.sqrt(r/MIC.buf.length);
@@ -736,9 +740,11 @@ function analyse(){
   const hist=MIC.hist||(MIC.hist=[]);const low=hist.length?Math.min(...hist):rs;hist.push(rs);if(hist.length>6)hist.shift();
   if(r<gate){if(++MIC.quiet>3){MIC.emitted=null;if(MIC.holding!=null){const h=MIC.holding;MIC.holding=null;if(SC.tempo)tempoRelease(h,'mic')}}MIC.cand=null;MIC.stable=0;return}
   MIC.quiet=0;
-  if(rs>low*1.45&&rs-low>gate*.8&&Date.now()-(MIC.lastAt||0)>120&&Date.now()-(MIC.emitAt||0)>200){MIC.emitted=null;MIC.stable=0;MIC.lastAt=Date.now();hist.length=0;hist.push(rs)}   // same note pressed again
+  if(rs>low*1.45&&rs-low>gate*.8&&Date.now()-(MIC.lastAt||0)>120&&Date.now()-(MIC.emitAt||0)>300){MIC.emitted=null;MIC.stable=0;MIC.lastAt=Date.now();hist.length=0;hist.push(rs)}   // same note pressed again
   const y=yin(MIC.buf,ctx.sampleRate);if(!y)return;
-  const mf=69+12*Math.log2(y.f/440),m=Math.round(mf);if(m<LOW||m>HIGH)return;
+  let f=y.f;if(f>250&&f<470&&octLow(MIC.buf,f,ctx.sampleRate))f/=2;   // E3–A3: the piano speaker gives a weak fundamental, YIN reads one octave up
+  const mf=69+12*Math.log2(f/440),m=Math.round(mf);if(m<LOW||m>HIGH)return;
+  if(MIC.emitted!=null&&Math.abs(m-MIC.emitted)===12)return;          // octave jump with no new key press = decay noise
   if(m===MIC.cand)MIC.stable++;else{MIC.cand=m;MIC.stable=1}
   if(MIC.stable>=2&&m!==MIC.emitted&&Date.now()>MIC.lock){MIC.emitted=m;MIC.emitAt=Date.now();heard(m,Math.round((mf-m)*100))}
 }
