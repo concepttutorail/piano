@@ -246,26 +246,75 @@ html.phone.play #staff svg{height:64vh}
 html.phone #bar2 #fb{font-size:14px}
 html.phone #staff svg{height:clamp(130px,46vh,300px)}
 @media(orientation:landscape) and (max-height:500px){html.phone #staff svg{height:40vh}}
+/* ===== phone-first UX pass (19 Nov) ===== */
+button:focus-visible,select:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+html.phone body{overscroll-behavior:none}
+.white.c{border-left:2px solid #7d8794}
+.nm.oct{font-size:11px;color:#6b7380}
+.mid .nm{color:#c2410c!important;font-size:12px}
+.gx{background:#fffdf8;border-radius:10px;margin:6px 0}
+.gx svg{width:100%;height:120px;display:block}
+.gsec{border:1px solid var(--line);border-radius:12px;margin:8px 0;padding:0 12px;background:var(--card)}
+.gsec>summary{cursor:pointer;padding:12px 0;font-weight:700;list-style:none}
+.gsec>summary::before{content:"▸ ";color:var(--acc)}.gsec[open]>summary::before{content:"▾ "}
+.gsec[open]{padding-bottom:10px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:8px 0}
+.stats div{background:var(--tip);border-radius:12px;padding:10px;text-align:center}
+.stats b{display:block;font-size:18px}.stats small{color:var(--mut);font-size:12px}
+.okline{color:var(--ok);font-weight:700}
+.mx{border:1px solid var(--line);border-radius:12px;margin:6px 0;padding:0 12px}
+.mx>summary{cursor:pointer;padding:10px 0;list-style:none}
+.mx>summary::before{content:"▸ ";color:var(--acc)}.mx[open]>summary::before{content:"▾ "}
+.adv{margin-top:14px}.adv>summary{cursor:pointer;color:var(--mut);font-weight:650;padding:6px 0}
+.item.on .tx small{color:var(--ink)}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}.white.hint{background:#8fe0ad!important}.black.hint{background:#1f9d55!important}}
+@media(max-width:560px){.stats{grid-template-columns:1fr 1fr}.stats div:last-child{grid-column:1/-1}}
+/* ===== practice bar: back · title · progress · menu (19 Nov) ===== */
+header.top{display:flex!important;align-items:center;gap:8px;flex-wrap:nowrap}
+html.inapp .brand{display:none}
+.modes{order:0!important;flex:none}
+.ptitle{flex:1 1 auto;min-width:0;display:flex;align-items:baseline;gap:12px;overflow:hidden;white-space:nowrap}
+.ptitle #title{font-weight:700;font-size:16px;margin:0;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.ptitle #info{display:flex;gap:10px;font-size:14px;color:var(--mut);flex:none}
+.ptitle #info span{background:none;padding:0}
+.tools{flex:none;flex-wrap:nowrap}
+#bMic:not(.live),#bMet:not(.live){display:none}
+.lvbar{display:none!important}
+.mlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px}
+.mlist button{display:flex;align-items:center;gap:10px;padding:12px;border-radius:12px;text-align:left;font-size:15px}
+.mi{font-size:20px;width:26px;text-align:center}
+#bar2{margin-top:2px}
+html.phone .ptitle #title{font-size:14px}
+html.phone .ptitle #info{font-size:13px}
+html.phone header.top{padding:3px 6px}
+@media(orientation:landscape) and (max-height:500px){html.phone #staff svg{height:48vh}html.phone #kb{height:22vh}}
+/* ===== phone: no floating controls; one top row + one control row (19 Nov) ===== */
+html.phone.play header.top{display:flex!important}
+html.phone.play #fb{position:static;max-width:none;text-align:left;pointer-events:auto;font-size:14px}
+html.phone.play #actions{position:static;max-width:none;justify-content:flex-end;margin:0}
+html.phone.play #actions button{padding:4px 12px;font-size:13px;box-shadow:none}
+html.phone.play #staff svg{height:clamp(130px,46vh,300px)}
+@media(orientation:landscape) and (max-height:500px){html.phone.play #staff svg{height:46vh}html.phone.play #kb{height:22vh}}
+.livebar{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--acc2);border:1px solid var(--acc);border-radius:12px;padding:8px 12px;margin-bottom:12px;font-weight:650}
+.livebar button{padding:5px 12px;font-size:13px}
 </style>
 </head>
 <body>
 <header class="top">
   <div class="brand"><span class="logo">𝄞</span><div><b>Piano Studio</b><small>Read · Play · Listen</small></div></div>
-  <nav class="modes"><button id="bHome" class="on">◀ Home</button><button id="bHomeH">⌂ Home</button><span hidden><button id="mLevels"></button><button id="bScroll"></button><button id="bFree"></button></span></nav>
+  <nav class="modes"><button id="bHome" class="on">◀ Home</button><span hidden><button id="bHomeH">⌂ Home</button><button id="mLevels"></button><button id="bScroll"></button><button id="bFree"></button></span></nav>
+  <div class="ptitle"><span id="title"></span><span id="info"></span></div>
   <div class="tools">
-    <button id="bMic" class="pill" title="Use your real piano">🎤 Piano: off</button>
+    <button id="bMic" class="pill" title="Piano input">🎤 Piano: off</button>
     <button id="bMet" class="pill" title="Metronome (M)">⏱</button>
-    <button id="bRef" class="icon" title="Reference">📖</button>
-    <button id="bSet" class="icon" title="Settings">⚙</button>
-    <button id="bDark" class="icon" title="Dark mode">🌙</button>
-    <button id="bFull" class="icon" title="Full screen">⛶</button>
-    <button id="bMute" class="icon" title="Sound on / off">🔊</button>
+    <button id="bMenu" class="icon" title="Menu">☰</button>
+    <span hidden><button id="bRef" title="Music guide">📖</button><button id="bSet" title="Settings">⚙</button><button id="bDark" title="Dark mode">🌙</button><button id="bFull" title="Full screen">⛶</button><button id="bMute" title="Sound on / off">🔊</button></span>
   </div>
 </header>
 <main>
   <div id="rot">Turn the phone sideways to see more of the staff and keys.</div>
   <div class="card">
-    <div class="lvbar"><div id="title"></div><button id="bLevel" class="pill">Change level ▾</button><button id="bLearn" class="pill">💡 Learn</button><div id="info"></div></div>
+    <div class="lvbar"><button id="bLevel" class="pill">Change level ▾</button><button id="bLearn" class="pill">💡 Learn</button></div>
     <div id="prog"></div>
     <div id="bar2"><div id="fb"></div><div id="actions"></div></div>
     <div id="staff"></div>
@@ -275,7 +324,7 @@ html.phone #staff svg{height:clamp(130px,46vh,300px)}
   <div class="hint-line">Keys: <b>A S D F G H J K L ; '</b> = C D E F G A B C D E F · black: <b>W E T Y U O P</b> · <b>Z / X</b> octave · <b>Space</b> next · <b>M</b> metronome</div>
 </main>
 <div id="app"></div>
-<div class="ov" id="ovLv"><div class="box" style="max-width:880px"><h2>Choose a level</h2><div id="levels"></div><div class="row"><button onclick="close('ovLv')">Close</button></div></div></div>
+<div class="ov" id="ovLv"><div class="box" style="max-width:880px"><h2>Choose a level</h2><div id="levels"></div><div class="row"><button data-close="ovLv">Close</button></div></div></div>
 <div class="ov" id="ovHello"><div class="box welcome" id="helloBox"></div></div>
 
 <div class="ov" id="ovLearn"><div class="box" id="learnBox"></div></div>
@@ -284,6 +333,7 @@ html.phone #staff svg{height:clamp(130px,46vh,300px)}
 <div class="ov" id="ovMic"><div class="box" id="micBox"></div></div>
 <div class="ov" id="ovScroll"><div class="box" id="scrollBox"></div></div>
 <div class="ov" id="ovMet"><div class="box" id="metBox"></div></div>
+<div class="ov" id="ovMenu"><div class="box menu" id="menuBox"></div></div>
 <div class="ov" id="ovSum"><div class="box" id="sumBox"></div></div>
 
 <script>
@@ -313,7 +363,8 @@ const S=Object.assign({names:false,letters:true,auto:true,all:false,timer:0,vol:
 const P=Object.assign({unlocked:1,best:{},miss:{},seen:{}},load('prog')||{});
 if(S.ver!==3){S.oct=4;S.ver=3}
 if(S.grand==null)S.grand=true;   // always draw both staffs; the one not in use is faded
-const effV=v=>S.grand?'grand':v;
+const GR=()=>S.grand&&!PHONE;   // phone: only the staff in use, so notes are bigger
+const effV=v=>GR()?'grand':v;
 const playView=on=>document.documentElement.classList.toggle('play',!!on&&PHONE);
 if(PHONE)S.letters=false;   // no laptop letter keys on a phone
 const saveS=()=>store('set',S), saveP=()=>store('prog',P);
@@ -401,7 +452,7 @@ function buildKeys(){
     const el=document.createElement('div');
     if(!isBlack(m)){el.className='key white';el.style.left=wi*W+'%';el.style.width=W+'%';wi++}
     else{el.className='key black';el.style.left=(wi*W-W*.31)+'%';el.style.width=W*.62+'%'}
-    if(m===60)el.classList.add('mid');
+    if(m===60)el.classList.add('mid');if(m%12===0)el.classList.add('c');
     el.innerHTML='<span class="nm"></span><span class="lt"></span>';
     el.addEventListener('pointerdown',e=>{e.preventDefault();try{el.setPointerCapture(e.pointerId)}catch(_){}press(m)});
     ['pointerup','pointercancel','lostpointercapture'].forEach(ev=>el.addEventListener(ev,()=>release(m)));
@@ -440,7 +491,7 @@ function tops(view){return view==='grand'?{treble:55,bass:175}:{[view]:95}}
 const REF={treble:30,bass:18}; // bottom-line step: E4, G2
 function yOf(st,c,T){return T[c]+4*s-(st-REF[c])*s/2}
 function svgStaff({view,notes=[],sig=null,time=null,barX=null,bars=[],extra='',W=600}){
-  let focus=null;if(view!=='grand'&&S.grand){focus=view;view='grand';notes=notes.map(n=>n.clef?n:{...n,clef:focus})}
+  let focus=null;if(view!=='grand'&&GR()){focus=view;view='grand';notes=notes.map(n=>n.clef?n:{...n,clef:focus})}
   const T=tops(view),H=view==='grand'?300:250;let o='';
   for(const c in T){let q='';
     for(let i=0;i<5;i++)q+=`<line class="sl" x1="18" x2="${W-10}" y1="${T[c]+i*s}" y2="${T[c]+i*s}"/>`;
@@ -461,7 +512,7 @@ function svgStaff({view,notes=[],sig=null,time=null,barX=null,bars=[],extra='',W
     if(nt.rest){o+=restSVG(nt,T[c]);continue}
     o+=noteSVG(nt,c,T);
   }
-  return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">${o}</svg>`;
+  return `<svg viewBox="${PHONE&&view!=='grand'?`0 30 ${W} 200`:`0 0 ${W} ${H}`}" xmlns="http://www.w3.org/2000/svg">${o}</svg>`;
 }
 function noteSVG(nt,c,T){
   const n=nt.n,col=nt.color||'#1d2430',st=stepOf(n),y=yOf(st,c,T),x=nt.x,ref=REF[c];let o='';
@@ -492,14 +543,13 @@ let G={lv:1,mode:'level',phase:'ask',mist:0,q:null,mel:null,round:{n:0,good:0,mi
 function fb(t,c=''){const e=$('fb');e.textContent=t;e.className=c}
 function info(){
   const r=G.round,b=base();
-  const letters=S.letters?`<span title="Z / X to move">⌨ A = <b>${nameM(b)}</b></span>`:'';
-  if(G.mode==='free'){$('info').innerHTML=letters;$('prog').innerHTML='';return}
-  const tot=G.mode==='scroll'&&SC.src==='song'?SC.notes.filter(x=>!x.rest).length:ROUND;
-  if(G.mode==='scroll'&&SC.tempo){const t=SC.st;$('info').innerHTML=`<span>Note <b>${Math.min(r.n+1,tot)}/${tot}</b></span><span>♩ <b>${SC.bpm}</b></span><span>On time <b>${t.ok}</b></span><span>Early <b>${t.early}</b></span><span>Late <b>${t.late}</b></span><span>Missed <b>${t.miss}</b></span>`+letters;}
-  else{
-  let h=`<span>${G.mode==='scroll'?'Note':'Question'} <b>${Math.min(r.n+1,tot)}/${tot}</b></span><span>First try <b>${r.good}/${r.n}</b></span><span>Tries left <b>${Math.max(0,2-G.mist)}</b></span>`;
-  if(G.timer)h+=`<span>⏳ <b>${Math.ceil(G.tLeft)}s</b></span>`;
-  $('info').innerHTML=h+letters;}
+  const letters=S.letters&&!PHONE?`<span title="Z / X to move">⌨ A = ${nameM(b)}</span>`:'';
+  if(G.mode==='free'||G.mode==='menu'){$('info').innerHTML=letters;$('prog').innerHTML='';return}
+  const tot=G.mode==='scroll'&&SC.src==='song'?SC.notes.filter(x=>!x.rest).length:G.focus&&G.mode==='level'?10:ROUND;
+  let t=`<b>${Math.min(r.n+1,tot)}/${tot}</b>`;
+  if(G.mode==='scroll'&&SC.tempo)t+=`<span>♩ ${SC.bpm}</span>`;
+  if(G.timer)t+=`<span>⏳ ${Math.ceil(G.tLeft)}s</span>`;
+  $('info').innerHTML=t+letters;
   const list=r.list||[];let p='';
   if(tot<=60)for(let i=0;i<tot;i++)p+=`<i class="${i<list.length?(list[i]?'ok':'bad'):i===list.length?'now':''}"></i>`;
   else p=`<i class="ok" style="flex:0 0 ${100*list.length/tot}%"></i><i></i>`;
@@ -516,17 +566,21 @@ function renderLevels(){
 }
 function actions(list){const e=$('actions');e.innerHTML='';list.forEach(([t,f,cls])=>{const b=document.createElement('button');b.textContent=t;if(cls)b.className=cls;b.onclick=f;e.append(b)})}
 function stdActions(){
-  if(G.mode==='scroll'&&SC.tempo&&PHONE&&!SC.done&&!SC.paused)return actions([['⏸',tempoPause,'big']]);
-  if(G.mode==='scroll'&&SC.tempo)return actions(SC.done?[]:[SC.paused?['▶ Go on'+(PHONE?'':' (Space)'),tempoResume,'pri']:['⏸ Pause'+(PHONE?'':' (Space)'),tempoPause],['⏪ Back 20 s'+(PHONE?'':' (B)'),()=>tempoBack(20)],['↺ From start',()=>startScroll()],['■ Stop',()=>go(APP.from)]]);
-  if(G.mode==='scroll'){const a=[['🔊 Hear next 4',hearAhead],['❓ Show answer',giveUp],['■ Stop',()=>go(APP.from)]];if(G.nextFn)a.push(['Next ▶ (Space)',G.nextFn,'pri']);return actions(a)}
+  if(G.mode==='scroll'&&SC.tempo&&PHONE&&!SC.done&&!SC.paused)return actions([['⏸ Pause',tempoPause],['↺ Restart',restart]]);
+  if(G.mode==='scroll'&&SC.tempo)return actions(SC.done?[]:[SC.paused?['▶ Go on'+(PHONE?'':' (Space)'),tempoResume,'pri']:['⏸ Pause'+(PHONE?'':' (Space)'),tempoPause],['⏪ Back 20 s'+(PHONE?'':' (B)'),()=>tempoBack(20)],['↺ Restart',restart],['📖 Guide',openRef],['■ Finish & review',finishEarly]]);
+  if(G.mode==='scroll'){const a=[['🔊 Hear next 4',hearAhead],['❓ Show answer',giveUp],['↺ Restart',restart],['■ Finish & review',finishEarly]];if(G.nextFn)a.push(['Next ▶ (Space)',G.nextFn,'pri']);return actions(a)}
   const d=L[G.lv],btn=[['🔊 Listen',listen],['❓ Show answer',giveUp]];
   if(d.type==='val'||d.type==='bar')btn[1]=['❓ Show answer',giveUp];
   if(G.nextFn)btn.push(['Next ▶ (Space)',G.nextFn,'pri']);
   actions(btn);
 }
+function restart(){releaseAll();if(G.mode==='scroll')startScroll();else if(G.mode==='level'){G.focus?practiseMissed(G.focus):setLevel(G.lv)}}
+function finishEarly(){
+  if(G.mode==='scroll'&&SC.tempo){SC.done=true;SC.run=(SC.run||0)+1;cancelAnimationFrame(SC.raf);tempoMetOff()}
+  clearTimer();releaseAll();if(!G.round.n){go(APP.from);return}summary(true)}
 function setNext(f){G.nextFn=f;stdActions()}
 
-function setLevel(lv){tempoStop();playView(0);releaseAll();G.lv=lv;G.mode='level';G.round={n:0,good:0,miss:{}};G.mel=null;renderLevels();$('title').textContent=`L${lv} · ${L[lv].t}`;newQ();if(!P.seen[lv]&&S.hello){P.seen[lv]=1;saveP();openLearn()}}
+function setLevel(lv){tempoStop();playView(0);releaseAll();G.lv=lv;G.mode='level';G.round={n:0,good:0,miss:{}};G.mel=null;G.focus=G.focusNext||null;G.focusNext=null;renderLevels();$('title').textContent=`L${lv} · ${L[lv].t}`+(G.focus?' · missed notes':'');newQ();if(!G.focus&&!P.seen[lv]&&S.hello){P.seen[lv]=1;saveP();openLearn()}}
 function weighted(items,keyFn){const w=items.map(it=>1+(P.miss[G.lv+':'+keyFn(it)]||0));let r=Math.random()*w.reduce((a,b)=>a+b,0);for(let i=0;i<items.length;i++){r-=w[i];if(r<=0)return items[i]}return items[0]}
 function record(label,first){
   G.round.n++;(G.round.list||(G.round.list=[])).push(!!first);if(first)G.round.good++;else G.round.miss[label]=(G.round.miss[label]||0)+1;
@@ -535,12 +589,13 @@ function record(label,first){
 
 function newQ(){
   clearTimer();clearHints();G.mist=0;G.phase='ask';G.nextFn=null;fb('');$('choices').innerHTML='';
-  if(G.round.n>=ROUND)return summary();
+  if(G.round.n>=(G.focus?10:ROUND))return summary();
   const d=L[G.lv],last=G.q&&G.q.label;
-  if(d.type==='note'){let n;const pool=d.pool();do{n=weighted(pool,nameN)}while(pool.length>1&&nameN(n)===last);
+  if(d.type==='note'){let n;let pool=d.pool();if(G.focus){const f=pool.filter(x=>G.focus.includes(nameN(x)));if(f.length)pool=f}do{n=weighted(pool,nameN)}while(pool.length>1&&nameN(n)===last);
     G.q={n,m:midiOf(n),label:nameN(n)};fb('Find this note.')}
   else if(d.type==='acc'){const items=[];for(let m=48;m<=72;m++){const w=nat(m);if(w)items.push(w);else{items.push({...nat(m-1),a:1});items.push({...nat(m+1),a:-1})}}
-    let n;do{n=weighted(items,nameN)}while(nameN(n)===last);
+    if(G.focus){const f=items.filter(x=>G.focus.includes(nameN(x)));if(f.length)items.splice(0,items.length,...f)}
+    let n;do{n=weighted(items,nameN)}while(items.length>1&&nameN(n)===last);
     const m=midiOf(n);G.q={n,m,label:nameN(n)+(isBlack(m)?'':'')};fb(n.a?'Watch the sign before the note.':'Find this note.')}
   else if(d.type==='key'){const ks=rand(KS),pool=nats(60,76);let n;
     if(Math.random()<.55){const L2=ks.sig.map(x=>x[0]);n=rand(pool.filter(p=>L2.includes(p.L)))}else n=rand(pool);
@@ -594,13 +649,14 @@ function judge(m){
 function judgeNote(m,t,label,onDone){
   if(G.phase==='done')return;
   if(G.phase==='answer'){if(m===t){flash(m,'right');clearHints();G.phase='done';onDone()}else flash(m,'wrong');return}
-  if(m===t){flash(m,'right');clearTimer();fb('Yes! '+label,'ok');G.phase='done';record(label,G.mist===0);draw();onDone()}
+  if(m===t){flash(m,'right');clearTimer();fb('Correct!','ok');G.phase='done';record(label,G.mist===0);draw();onDone()}
   else{G.mist++;flash(m,'wrong');info();
-    if(G.mist>=2)showAnswer(t,label);else fb(`You played ${nameFull(m)}. Try again.`,'bad')}
+    (G.round.conf||(G.round.conf={}))[label]=[...((G.round.conf||{})[label]||[]),nameM(m)];
+    if(G.mist>=2)showAnswer(t,label);else fb('Try again.','bad')}
 }
 function showAnswer(t,label){
   clearTimer();G.phase='answer';record(label,false);hint(t);autoOct(t);
-  fb(`It is ${label}. Press the green key.`,'bad');draw();info();
+  fb('Play the green key.','bad');draw();info();
   setTimeout(()=>playFor(t,900),450);
   setNext(()=>{clearHints();if(G.mode==='scroll'){G.phase='done';scrollAdvance()}else if(L[G.lv].type==='mel'){G.phase='done';melStep()}else newQ()});
 }
@@ -617,7 +673,7 @@ function melStep(){
     const ms=420;M.notes.forEach((n,i)=>setTimeout(()=>playFor(midiOf(n),ms-40),300+i*ms));
     setTimeout(()=>{if(G.mode==='level'&&L[G.lv].type==='mel')newQ()},300+M.notes.length*ms+500);return}
   G.phase='ask';clearHints();draw();info();autoOct(midiOf(M.notes[M.i]));startTimer();
-  if(M.i>0)fb('Good. Next blue note.','ok');
+  if(M.i>0)fb('Correct!','ok');
 }
 function makeMel(){
   const pool=nats(60,72);const len=4+Math.floor(Math.random()*5);let i=Math.floor(Math.random()*5);const notes=[];
@@ -635,7 +691,7 @@ function choiceBtn(t,ok,onRight){
   b.onclick=()=>{if(G.phase!=='ask')return;
     if(ok){b.classList.add('ok');G.phase='done';fb('Yes!','ok');record(G.q.label,G.mist===0);onRight();
       const wait=L[G.lv].type==='bar'?G.q.top*600+700:G.q.v.b*600+700;setNext(newQ);setTimeout(()=>{if(G.phase==='done'&&G.nextFn===newQ)newQ()},wait)}
-    else{b.classList.add('bad');G.mist++;info();if(G.mist>=2)revealChoice([...$('choices').children].find(x=>x.dataset.ok==='1'));else fb('Not this one. Try again.','bad')}};
+    else{b.classList.add('bad');G.mist++;(G.round.conf||(G.round.conf={}))[G.q.label]=[...((G.round.conf||{})[G.q.label]||[]),t.split(' ·')[0]];info();if(G.mist>=2)revealChoice([...$('choices').children].find(x=>x.dataset.ok==='1'));else fb('Try again.','bad')}};
   $('choices').append(b);
 }
 function revealChoice(b){
@@ -654,7 +710,7 @@ function playBar(){const beat=600,q=G.q,all=[...q.vals,q.gap];
 
 // ---------- timer ----------
 function startTimer(){clearTimer();const d=L[G.lv];if(!S.timer||G.mode!=='level'||!['note','acc','key','mel'].includes(d.type))return;
-  G.tLeft=S.timer;G.timer=setInterval(()=>{G.tLeft-=.25;info();if(G.tLeft<=0){clearTimer();if(G.phase==='ask'){G.mist=2;fb("Time's up.",'bad');giveUpTimer()}}},250)}
+  G.tLeft=S.timer;G.timer=setInterval(()=>{if(document.querySelector('.ov.show'))return;G.tLeft-=.25;info();if(G.tLeft<=0){clearTimer();if(G.phase==='ask'){G.mist=2;fb("Time's up.",'bad');giveUpTimer()}}},250)}
 function giveUpTimer(){const d=L[G.lv];if(d.type==='mel'){const n=G.mel.notes[G.mel.i];showAnswer(midiOf(n),nameN(n))}else showAnswer(G.q.m,G.q.label)}
 function clearTimer(){if(G.timer){clearInterval(G.timer);G.timer=null}}
 
@@ -672,83 +728,155 @@ function listen(){
 }
 
 // ---------- summary ----------
-function summary(){
+function summary(partial){partial=partial===true;
   playView(0);
   clearTimer();const r=G.round,pct=Math.round(100*r.good/Math.max(1,r.n));
-  const isSong=G.mode==='scroll'&&SC.src==='song',inScroll=G.mode==='scroll';let unl='';
-  if(!isSong){P.best[G.lv]=Math.max(P.best[G.lv]||0,pct);
-  if(pct>=80&&G.lv===P.unlocked&&G.lv<L.length-1){P.unlocked++;unl=`<p><b>Level ${G.lv+1} is open!</b></p>`}}
-  if(isSong&&APP.song)P.songs[APP.song]=Math.max(P.songs[APP.song]||0,pct);
+  const isSong=G.mode==='scroll'&&SC.src==='song',inScroll=G.mode==='scroll',focus=!!G.focus&&!inScroll;let unl='';
+  if(!isSong&&!focus&&!partial){P.best[G.lv]=Math.max(P.best[G.lv]||0,pct);
+  if(pct>=80&&G.lv===P.unlocked&&G.lv<L.length-1){P.unlocked++;unl=`<p class="okline">✓ Level ${G.lv+1} is open.</p>`}}
+  if(isSong&&APP.song&&!partial)P.songs[APP.song]=Math.max(P.songs[APP.song]||0,pct);
   saveP();renderLevels();
-  const miss=Object.entries(r.miss).sort((a,b)=>b[1]-a[1]).slice(0,6).map(([k,v])=>`${k} ×${v}`).join('\n')||'None.';
-  const canNext=!isSong&&G.lv<L.length-1&&(S.all||G.lv+1<=P.unlocked);
-  $('sumBox').innerHTML=`<h2>${isSong?'Song done':'Round done'}</h2><p>${SC.tempo&&inScroll?'Clean notes (right key, on time'+(S.tHold?', held':'')+')':'First try'}: <b>${r.good}/${r.n}</b> (${pct}%). ${pct>=80?'Great.':isSong?'Play it again.':'Need 80% to open the next level.'}</p>${unl}
-  ${tempoSum()}<h3>Missed most</h3><pre class="tip">${miss}</pre><p class="small">Missed notes come back more often next time.</p>
-  <div class="row"><button class="pri" id="sAgain">Play again</button>${canNext?'<button id="sNext">Next level ▶</button>':''}${isSong&&nextSong()?'<button id="sNextSong">Next song ▶</button>':''}<button id="sBack">${isSong?'◀ Songs':'◀ Levels'}</button></div>`;
-  open('ovSum');$('sAgain').onclick=()=>{close('ovSum');inScroll?startScroll():setLevel(G.lv)};if($('sNextSong'))$('sNextSong').onclick=()=>{close('ovSum');playSong(nextSong())};$('sBack').onclick=()=>go(isSong?'songs':APP.from);
+  const view=inScroll?SC.view:L[G.lv].view,conf=r.conf||{};
+  const miss=Object.entries(r.miss).sort((a,b)=>b[1]-a[1]).slice(0,6);
+  const canNext=!partial&&!isSong&&!focus&&G.lv<L.length-1&&(S.all||G.lv+1<=P.unlocked);
+  const canFocus=!inScroll&&['note','acc'].includes(L[G.lv].type)&&miss.length>0;
+  const status=partial?'Stopped early':isSong?(pct>=80?'Song learnt ✓':'Play it again'):focus?'Missed-notes practice':pct>=80?'Level passed ✓':'Need 80% to pass';
+  const mx=miss.length?miss.map(([k,v])=>{const c=conf[k]?[...new Set(conf[k])]:[];const ex=explain(k,view);
+    return `<details class="mx"><summary><b>${k}</b> · missed ${v}×${c.length?` · you played ${c.slice(0,3).join(', ')}`:''}</summary>${ex||'<p class="small">No extra notes for this one.</p>'}</details>`}).join(''):'<p class="small">No mistakes this round.</p>';
+  $('sumBox').innerHTML=`<h2>${partial?'Stopped early':isSong?'Song done':focus?'Practice done':'Round done'}</h2>
+<div class="stats"><div><b>${r.good}/${r.n}</b><small>${SC.tempo&&inScroll?'clean notes':'right first try'}</small></div><div><b>${pct}%</b><small>score</small></div><div><b>${status}</b><small>${partial?'not counted as a full round':isSong||focus?'':'80% opens the next level'}</small></div></div>${unl}
+${tempoSum()}<h3>What to work on</h3>${mx}${miss.length?'<p class="small">Tap a note to see why. Missed notes come back more often next time.</p>':''}
+<div class="row"><button class="pri" id="sAgain">↺ Practise again</button>${canNext?'<button class="pri" id="sNext">Next level ▶</button>':''}${canFocus?'<button id="sFocus">🎯 Practise missed notes</button>':''}${isSong&&nextSong()?'<button id="sNextSong">Next song ▶</button>':''}<button id="sGuide">📖 Music guide</button><button id="sBack">${isSong?'◀ Songs':'◀ Levels'}</button></div>`;
+  open('ovSum');hearBind($('sumBox'));
+  $('sAgain').onclick=()=>{close('ovSum');restart()};
+  if($('sNextSong'))$('sNextSong').onclick=()=>{close('ovSum');playSong(nextSong())};
+  if($('sFocus'))$('sFocus').onclick=()=>{close('ovSum');practiseMissed(miss.map(x=>x[0]))};
+  $('sGuide').onclick=()=>{close('ovSum');openRef(()=>open('ovSum'))};
+  $('sBack').onclick=()=>go(isSong?'songs':APP.from);
   if(canNext)$('sNext').onclick=()=>{close('ovSum');if(inScroll){G.lv++;startScroll('level')}else setLevel(G.lv+1)};
   G.phase='done';G.nextFn=null;actions([]);
 }
 
 // ---------- overlays ----------
 function open(id){if(id!=='ovSum'&&SC.tempo&&!SC.done)tempoPause();releaseAll();$(id).classList.add('show')}
-function close(id){$(id).classList.remove('show');if(G.mode==='menu')render()}
+function close(id){$(id).classList.remove('show');if(id==='ovRef'&&GREF.back){const f=GREF.back;GREF.back=null;f();return}if(G.mode==='menu')render()}
 document.querySelectorAll('.ov').forEach(o=>o.addEventListener('pointerdown',e=>{if(e.target===o)close(o.id)}));
+document.addEventListener('click',e=>{const c=e.target.closest&&e.target.closest('[data-close]');if(c)close(c.dataset.close)});
 function openLearn(){
   const d=L[G.lv];
   $('learnBox').innerHTML=`<h2>L${G.lv} · ${d.t}</h2><pre class="tip">${d.learn}</pre>${d.tips.map(t=>`<pre class="tip">${TIPS[t]}</pre>`).join('')}
-  <div class="row"><button id="lListen">🔊 Listen</button><button class="pri" id="lStart">Start practice</button></div>`;
-  open('ovLearn');$('lListen').onclick=listen;$('lStart').onclick=()=>close('ovLearn');
+  <div class="row"><button id="lListen">🔊 Listen</button><button id="lGuide">📖 Music guide</button><button class="pri" id="lStart">Start practice</button></div>`;
+  open('ovLearn');$('lListen').onclick=listen;$('lStart').onclick=()=>close('ovLearn');$('lGuide').onclick=()=>{close('ovLearn');openRef(()=>open('ovLearn'))};
 }
-function openRef(){
-  $('refBox').innerHTML=`<h2>Reference</h2>
-<h3>Staff and clefs</h3><pre class="tip">Staff = 5 lines, 4 spaces. Higher on the staff = higher sound.
+// ---------- music guide + note explanations (tap to open, never during play) ----------
+const NOTE_RE=/^([A-G])([♯♭]?)(\d)$/;
+const parseLab=t=>{const m=String(t).match(NOTE_RE);return m?{L:m[1],a:m[2]==='♯'?1:m[2]==='♭'?-1:0,o:+m[3]}:null};
+function gsvg(o){const g=S.grand;S.grand=false;try{return svgStaff(o)}finally{S.grand=g}}
+const KEYPLACE={C:'the white key just left of a group of 2 black keys',D:'the white key between the 2 black keys',E:'the white key just right of the 2 black keys',
+ F:'the white key just left of a group of 3 black keys',G:'the white key between the 1st and 2nd of the 3 black keys',A:'the white key between the 2nd and 3rd of the 3 black keys',B:'the white key just right of the 3 black keys'};
+const BOTTOM={treble:30,bass:18};   // E4 and G2 = bottom line
+function staffPlace(n,clef){
+  const d=stepOf(n)-BOTTOM[clef];
+  if(d>=0&&d<=8)return d%2?`space ${(d+1)/2} of the ${clef} staff (counting from the bottom)`:`line ${d/2+1} of the ${clef} staff (counting from the bottom)`;
+  if(d<0){const u=-d;return u%2?(u===1?`the space just below the ${clef} staff`:`just below ledger line ${(u-1)/2} under the ${clef} staff`):`ledger line ${u/2} below the ${clef} staff`}
+  const u=d-8;return u%2?(u===1?`the space just above the ${clef} staff`:`just above ledger line ${(u-1)/2} over the ${clef} staff`):`ledger line ${u/2} above the ${clef} staff`;
+}
+function octWord(o){return o===4?'the octave that starts at middle C (C4, orange mark)':`the C${o} octave, ${Math.abs(o-4)} octave${Math.abs(o-4)>1?'s':''} ${o<4?'below':'above'} middle C`}
+function noteInfo(lab,view){
+  const n=parseLab(lab);if(!n)return '';
+  const m=midiOf(n),clef=view==='bass'?'bass':view==='treble'?'treble':m>=60?'treble':'bass';
+  const base={L:n.L,o:n.o,a:0};
+  const sign=n.a>0?`\n♯ sharp: play the key just to the RIGHT of ${n.L}${n.o}. Here that is ${isBlack(m)?'a black key':'a white key'}.`:n.a<0?`\n♭ flat: play the key just to the LEFT of ${n.L}${n.o}. Here that is ${isBlack(m)?'a black key':'a white key'}.`:'';
+  const tip=clef==='treble'?'Treble lines E G B D F · spaces F A C E':'Bass lines G B D F A · spaces A C E G';
+  return `<div class="gx">${gsvg({view:clef,notes:[{n,x:300,dur:'w',label:nameN(n),labCol:'#1f6feb'}]})}</div>
+<pre class="tip">${nameN(n)} · ${clef} clef
+On the staff: ${staffPlace(base,clef)}.
+On the piano: ${KEYPLACE[n.L]}, in ${octWord(n.o)}.${sign}
+Hint: ${tip}.</pre><div class="row"><button data-hear="${m}">🔊 Hear ${nameN(n)}</button></div>`;
+}
+function valInfo(lab){const v=VALS.find(x=>x.lab===lab);if(!v)return '';const i=VALS.indexOf(v);
+  return `<div class="gx">${gsvg({view:'treble',notes:[{n:{L:'B',o:4,a:0},x:300,dur:v.dur,rest:v.rest}]})}</div><pre class="tip">${v.lab} = ${bstr(v.b)} beat${v.b===1?'':'s'}${v.rest?' of silence':''}.
+${v.rest?'Count the beats, do not play.':v.dur==='w'?'Hollow head, no stem.':v.dur==='h'?'Hollow head with a stem.':v.dur==='q'?'Filled head with a stem.':'Filled head, stem and one flag.'}</pre><div class="row"><button data-val="${i}">🔊 Hear and count</button></div>`}
+function barInfo(lab){const t=+String(lab).split('/')[0];if(!t)return '';
+  return `<pre class="tip">${t}/4 = ${t} beats in every bar.
+Add the notes you can see. The empty box takes the beats that are left.
+Quarter = 1 · Half = 2 · Dotted half = 3 · Whole = 4 · Eighth = ½</pre>`}
+function explain(lab,view){return NOTE_RE.test(lab)?noteInfo(lab,view):VALS.some(x=>x.lab===lab)?valInfo(lab):/\/4 bar$/.test(lab)?barInfo(lab):''}
+function hearBind(root){
+  root.querySelectorAll('[data-hear]').forEach(b=>b.onclick=()=>{ac();b.dataset.hear.split(',').map(Number).forEach((m,i)=>setTimeout(()=>playFor(m,420),i*460))});
+  root.querySelectorAll('[data-val]').forEach(b=>b.onclick=()=>{ac();const v=b.dataset.val==='dot'?{b:3,dur:'h'}:VALS[+b.dataset.val];playValue(v)});
+}
+const GREF={back:null};
+function openRef(back){GREF.back=typeof back==='function'?back:null;
+  const sec=(t,body,on)=>`<details class="gsec"${on?' open':''}><summary>${t}</summary>${body}</details>`;
+  const row=(ls,o,clef)=>ls.map((L,i)=>({n:{L,o:o[i],a:0},x:120+i*80,dur:'w',label:L}));
+  const tl=row('EGBDF'.split(''),[4,4,4,5,5]),ts=row('FACE'.split(''),[4,4,5,5]),bl=row('GBDFA'.split(''),[2,2,3,3,3]),bs=row('ACEG'.split(''),[2,3,3,3]);
+  const mids=t=>t.map(x=>midiOf(x.n)).join(',');
+  const vals=[0,1,2,3].map(i=>({n:{L:'B',o:4,a:0},x:130+i*110,dur:VALS[i].dur,label:bstr(VALS[i].b)}));
+  const rests=[4,5,6,7].map((i,k)=>({x:130+k*110,dur:VALS[i].dur,rest:1}));
+  const acc=[{n:{L:'F',o:4,a:1},x:170,dur:'w',label:'F♯4'},{n:{L:'B',o:4,a:-1},x:400,dur:'w',label:'B♭4'}];
+  const opts=[];for(let m=LOW;m<=HIGH;m++){const n=nat(m);if(n)opts.push(`<option ${m===60?'selected':''}>${nameN(n)}</option>`);else opts.push(`<option>${nameN({...nat(m-1),a:1})}</option>`,`<option>${nameN({...nat(m+1),a:-1})}</option>`)}
+  $('refBox').innerHTML=`<h2>📖 Music guide</h2><p class="small">Tap a topic to open it. Tap 🔊 to hear.</p>
+${sec('Learn about one note',`<div class="row"><select id="gNote">${opts.join('')}</select><select id="gClef"><option value="auto">Clef: auto</option><option value="treble">Treble</option><option value="bass">Bass</option></select></div><div id="gOut"></div>`,1)}
+${sec('Staff and clefs',`<div class="gx">${svgStaff({view:'grand',notes:[{n:{L:'C',o:4,a:0},x:300,dur:'w',label:'C4',clef:'treble'}]})}</div><pre class="tip">Staff = 5 lines, 4 spaces. Higher on the staff = higher sound.
 Treble clef 𝄞 = high notes, right hand. Its curl wraps the G4 line.
 Bass clef 𝄢 = low notes, left hand. Its two dots sit around the F3 line.
 Ledger lines = short extra lines above or below the staff.
-Middle C (C4) = one ledger line below treble, or above bass.</pre>
-<h3>Treble</h3><pre class="tip">Lines: E G B D F — Every Good Boy Does Fine
-Spaces: F A C E — FACE</pre>
-<h3>Bass</h3><pre class="tip">Lines: G B D F A — Good Boys Do Fine Always
-Spaces: A C E G — All Cows Eat Grass</pre>
-<h3>Keyboard</h3><pre class="tip">Black keys come in groups of 2 and 3.
+Middle C (C4) = one ledger line below treble, or above bass.</pre><div class="row"><button data-hear="60">🔊 Hear middle C</button></div>`)}
+${sec('Treble notes',`<div class="gx">${gsvg({view:'treble',notes:tl})}</div><pre class="tip">Lines: E G B D F — Every Good Boy Does Fine</pre><div class="row"><button data-hear="${mids(tl)}">🔊 Hear the lines</button></div>
+<div class="gx">${gsvg({view:'treble',notes:ts})}</div><pre class="tip">Spaces: F A C E — it spells FACE</pre><div class="row"><button data-hear="${mids(ts)}">🔊 Hear the spaces</button></div>`)}
+${sec('Bass notes',`<div class="gx">${gsvg({view:'bass',notes:bl})}</div><pre class="tip">Lines: G B D F A — Good Boys Do Fine Always</pre><div class="row"><button data-hear="${mids(bl)}">🔊 Hear the lines</button></div>
+<div class="gx">${gsvg({view:'bass',notes:bs})}</div><pre class="tip">Spaces: A C E G — All Cows Eat Grass</pre><div class="row"><button data-hear="${mids(bs)}">🔊 Hear the spaces</button></div>`)}
+${sec('The keyboard',`<pre class="tip">Black keys come in groups of 2 and 3.
 C = white key just left of a group of 2.
 F = white key just left of a group of 3.
 White keys repeat: C D E F G A B C ...
-Your piano: C2 (lowest) to B6 (highest). 35 white keys.</pre>
-<h3>Sharps, flats, naturals</h3><pre class="tip">♯ sharp = next key to the right (one half step up)
-♭ flat = next key to the left (one half step down)
+Middle C (C4) has an orange mark on the screen keyboard.
+Your piano: C2 (lowest) to B6 (highest). 35 white keys.</pre><div class="row"><button data-hear="60,62,64,65,67,69,71,72">🔊 Hear C4 to C5</button></div>`)}
+${sec('Note values (how long)',`<div class="gx">${gsvg({view:'treble',notes:vals})}</div><pre class="tip">Whole = 4 beats (hollow, no stem)
+Half = 2 beats (hollow, stem)
+Quarter = 1 beat (filled, stem)
+Eighth = ½ beat (filled, stem, flag)</pre><div class="row">${[0,1,2,3].map(i=>`<button data-val="${i}">🔊 ${VALS[i].lab}</button>`).join('')}</div>`)}
+${sec('Rests (silence)',`<div class="gx">${gsvg({view:'treble',notes:rests})}</div><pre class="tip">A rest = silence. Count it like a note of the same length.
+Whole rest = 4 · Half rest = 2 · Quarter rest = 1 · Eighth rest = ½
+Whole rest hangs below a line. Half rest sits on a line.</pre><div class="row">${[4,5,6,7].map(i=>`<button data-val="${i}">🔊 ${VALS[i].lab}</button>`).join('')}</div>`)}
+${sec('Dotted notes',`<div class="gx">${gsvg({view:'treble',notes:[{n:{L:'B',o:4,a:0},x:300,dur:'h',dot:1,label:'3'}]})}</div><pre class="tip">A dot after a note adds half its value.
+Dotted half = 2 + 1 = 3 beats.
+Dotted quarter = 1 + ½ = 1½ beats.</pre><div class="row"><button data-val="dot">🔊 Hear a dotted half</button></div>`)}
+${sec('Sharps, flats, naturals',`<div class="gx">${gsvg({view:'treble',notes:acc})}</div><pre class="tip">♯ sharp = next key to the RIGHT (one half step up)
+♭ flat = next key to the LEFT (one half step down)
 ♮ natural = cancel the sharp or flat
-A sign before a note lasts until the bar line ends.</pre>
-<h3>Note values (beats in 4/4)</h3><pre class="tip">Whole  𝅝  = 4   (hollow, no stem)
-Half   𝅗𝅥  = 2   (hollow, stem)
-Quarter ♩ = 1   (filled, stem)
-Eighth  ♪ = ½   (filled, stem, flag)
-Sixteenth = ¼   (two flags)
-Dot after a note = add half its value (dotted half = 3)
-Rests: same values, but silence.</pre>
-<h3>Time and bars</h3><pre class="tip">4/4 = 4 beats per bar. 3/4 = 3 beats (waltz). 2/4 = 2 beats (march).
-Bar line = end of a bar. Double bar = end of the piece.
-Repeat sign  ‖:  :‖  = play that part again.</pre>
-<h3>Loud and soft, fast and slow</h3><pre class="tip">p = soft · mp = a bit soft · mf = a bit loud · f = loud
-Andante = walking speed · Moderato = medium · Allegro = fast</pre>
-<h3>Fingers</h3><pre class="tip">1 = thumb, 2 = index, 3 = middle, 4 = ring, 5 = little finger.
-Same numbers on both hands. Curve the fingers, keep the wrist soft.</pre>
-<div class="row"><button class="pri" onclick="close('ovRef')">Close</button></div>`;
+A sign before a note lasts until the end of the bar.
+One black key has two names: F♯ = G♭.</pre><div class="row"><button data-hear="65,66">🔊 F then F♯</button><button data-hear="71,70">🔊 B then B♭</button></div>`)}
+${sec('Key signatures',`<div class="gx">${gsvg({view:'treble',sig:[['F',1]],notes:[{n:{L:'F',o:5,a:0},x:330,dur:'w',label:'F♯5'}]})}</div><pre class="tip">Sharps or flats at the start of the line = key signature.
+They apply to EVERY note with that letter, in the whole piece.
+G major: F♯ · D major: F♯ C♯ · F major: B♭ · B♭ major: B♭ E♭</pre><div class="row"><button data-hear="78">🔊 Hear F♯5</button></div>`)}
+${sec('Time signatures and bars',`<div class="gx">${gsvg({view:'treble',time:4,barX:520,notes:[130,230,330,430].map(x=>({n:{L:'B',o:4,a:0},x,dur:'q'}))})}</div><pre class="tip">Top number = beats in one bar. Bottom 4 = one beat is a quarter note.
+4/4 = 4 beats · 3/4 = 3 beats (waltz) · 2/4 = 2 beats (march)
+Bar line = end of a bar. Every bar adds up to the top number.</pre><div class="row"><button data-val="0">🔊 Count 4 beats</button></div>`)}
+${sec('Loud and soft, fast and slow',`<pre class="tip">p = soft · mp = a bit soft · mf = a bit loud · f = loud
+Andante = walking speed · Moderato = medium · Allegro = fast</pre>`)}
+${sec('Fingers',`<pre class="tip">1 = thumb, 2 = index, 3 = middle, 4 = ring, 5 = little finger.
+Same numbers on both hands. Curve the fingers, keep the wrist soft.</pre>`)}
+<div class="row"><button class="pri" data-close="ovRef">Close</button></div>`;
+  const one=()=>{const c=$('gClef').value;$('gOut').innerHTML=noteInfo($('gNote').value,c==='auto'?'grand':c);hearBind($('gOut'))};
+  $('gNote').onchange=one;$('gClef').onchange=one;one();hearBind($('refBox'));
   open('ovRef');
 }
+function practiseMissed(labels){G.focusNext=labels;setLevel(G.lv)}
+
 function openSet(){
   $('setBox').innerHTML=`<h2>Settings</h2>
 <label class="set"><input type="checkbox" id="sNames" ${S.names?'checked':''}> Show note names on keys (hint mode)</label>
 <label class="set"><input type="checkbox" id="sLetters" ${S.letters?'checked':''}> Show letter keys</label>
 <label class="set"><input type="checkbox" id="sAuto" ${S.auto?'checked':''}> Move letters to the note's octave by itself</label>
-<label class="set"><input type="checkbox" id="sGrand" ${S.grand?'checked':''}> Always show both staffs (the one not in use is faded)</label>
-<label class="set"><input type="checkbox" id="sHold" ${S.tHold?'checked':''}> Tempo: check how long you hold each note (laptop keys)</label>
-<label class="set"><input type="checkbox" id="sHoldMic" ${S.tHoldMic?'checked':''}> Tempo: check hold on the real piano too (rough)</label>
+<label class="set"><input type="checkbox" id="sGrand" ${S.grand?'checked':''}> Always show both staffs (laptop; the one not in use is faded)</label>
+<label class="set"><input type="checkbox" id="sHold" ${S.tHold?'checked':''} > Play with the beat: check how long you hold each note (laptop keys)</label>
+<label class="set"><input type="checkbox" id="sHoldMic" ${S.tHoldMic?'checked':''} > Play with the beat: check hold on the real piano too (rough)</label>
 <label class="set"><input type="checkbox" id="sAll" ${S.all?'checked':''}> Open all levels</label>
 <label class="set">Timer per note <select id="sTimer">${[0,3,5,8,12].map(v=>`<option value="${v}" ${S.timer==v?'selected':''}>${v?v+' s':'Off'}</option>`).join('')}</select></label>
 <label class="set">Volume <input type="range" id="sVol" min="0" max="1" step="0.05" value="${S.vol}"></label>
-<div class="row"><button id="sReset">Reset progress</button><button class="pri" onclick="close('ovSet')">Close</button></div>`;
+<div class="row"><button id="sReset">Reset progress</button><button class="pri" data-close="ovSet">Close</button></div>`;
   open('ovSet');
   $('sNames').onchange=e=>{S.names=e.target.checked;saveS();labelKeys()};
   $('sLetters').onchange=e=>{S.letters=e.target.checked;saveS();labelKeys()};
@@ -765,7 +893,7 @@ function freePlay(){
   tempoStop();playView(0);releaseAll();clearTimer();clearHints();G.mode='free';G.free=null;G.nextFn=null;renderLevels();
   $('title').innerHTML=`Free play · Staff <select id="freeClef"><option value="grand">Grand</option><option value="treble">Treble</option><option value="bass">Bass</option></select>`;
   $('freeClef').value=S.freeView||'grand';$('freeClef').onchange=e=>{S.freeView=e.target.value;saveS();draw()};
-  $('choices').innerHTML='';fb('Press any key.');actions([]);draw();info();
+  $('choices').innerHTML='';fb('Press any key.');actions([['✕ Clear',()=>{G.free=null;draw();fb('Press any key.')}]]);draw();info();
 }
 
 // ---------- input ----------
@@ -870,7 +998,7 @@ Pick "Default" or the right input above.</pre>
 Play one note at a time. Press firmly.
 Test: play C4. The big text should show C4.
 If it shows the right note but one octave off, raise sensitivity and press firmer.</pre>
-<div class="row"><button onclick="close('ovMic')">Close</button></div>`;
+<div class="row"><button data-close="ovMic">Close</button></div>`;
   $('mGo').onclick=()=>MIC.on?micStop():micStart();
   $('mDev').onchange=e=>{S.dev=e.target.value;saveS();if(MIC.on){micStop();micStart()}};
   $('mSens').oninput=e=>{S.sens=+e.target.value;saveS()};
@@ -924,7 +1052,7 @@ function startScroll(src){
   if(S.scMode!=='tempo'&&SC.src==='song'&&SC.song.tempo){MET.bpm=SC.song.tempo;S.bpm=MET.bpm;saveS();renderMet()}
   if(SC.src==='song'){SC.notes=SC.song.notes.map(x=>({...x}));SC.view=SC.song.view;SC.sig=null;SC.ks=null;SC.title=SC.song.title||'Song'}
   else{const d=L[G.lv];SC.view=['note','acc'].includes(d.type)?d.view:'treble';SC.ks=d.type==='key'?rand(KS):null;SC.sig=SC.ks?SC.ks.sig:null;SC.notes=[];SC.title=`L${G.lv} · ${d.t}`;fillStream()}
-  skipRests();renderLevels();$('title').textContent=(S.scMode==='tempo'?'♩ Tempo · ':'▶ Scroll · ')+SC.title+(SC.ks?' · '+SC.ks.nm:'');$('choices').innerHTML='';
+  skipRests();renderLevels();$('title').textContent=(S.scMode==='tempo'?'♩ With the beat · ':'▶ Play along · ')+SC.title+(SC.ks?' · '+SC.ks.nm:'');$('choices').innerHTML='';
   if(S.scMode==='tempo'&&SC.notes.length)return startTempo();
   fb(SC.notes.length?'Play the blue note. It waits for you.':'No notes found.');scrollTarget();draw();info();stdActions();
 }
@@ -990,7 +1118,7 @@ Add a dot for dotted: E4:q.   (no length = quarter)
 Rest: R  or  R:h
 |  = bar line (with spaces around it)
 Line starting with # = title</pre>
-<div class="row"><button onclick="close('ovScroll')">Close</button></div>`;
+<div class="row"><button data-close="ovScroll">Close</button></div>`;
   open('ovScroll');
   $('scLevel').onclick=()=>{close('ovScroll');startScroll('level')};
   const bpmTxt=()=>{const e=$('scBpm');if(!e)return;const sb=sg&&sg.tempo;e.textContent=`Song: ${sb?Math.round(sb*S.tPct/100)+' bpm (song tempo '+sb+')':Math.round(MET.bpm*S.tPct/100)+' bpm (no tempo line → '+S.tPct+'% of metronome '+MET.bpm+')'} · Level: ${Math.round(MET.bpm*S.tPct/100)} bpm`};bpmTxt();
@@ -1044,7 +1172,7 @@ function tempoGo(fromB){
 }
 function tempoPause(){
   if(!SC.tempo||SC.done||SC.paused)return;SC.pauseB=nowBeat();SC.nowB=SC.pauseB;SC.paused=true;SC.run++;cancelAnimationFrame(SC.raf);
-  if(MET.on)metStop();releaseAll();clearHints();fb(PHONE?'Paused.':'Paused. Space = go on · B = back 20 s.');stdActions();drawTempo(SC.pauseB);
+  if(MET.on)metStop();releaseAll();clearHints();fb('Paused.');stdActions();drawTempo(SC.pauseB);
 }
 function tempoResume(){if(!SC.paused)return;tempoGo(SC.pauseB<SC.startB?SC.startB:Math.max(0,Math.floor(SC.pauseB)))}
 function tempoBack(sec){
@@ -1085,16 +1213,16 @@ function judgeTempo(m){
   if(best){const dt=b-best.t,ms=Math.round(dt*60000/SC.bpm);
     Object.assign(best,{hit:true,hitB:b,m,src:mic?'mic':'key',ms,how:Math.abs(ms)<=SC.okMs?'ok':dt<0?'early':'late'});
     flash(m,'right');SC.st.ms.push(ms);
-    fb(best.how==='ok'?`${best.label} on time`:`${best.label} · ${best.how} ${Math.abs(ms)} ms`,best.how==='ok'?'ok':'');
+    fb(best.how==='ok'?'On time':best.how==='early'?'Early':'Late',best.how==='ok'?'ok':'');
     if(!holdOn(best))tempoFinal(best);return}
   flash(m,'wrong');
-  if(near){near.wrong=1;fb(`You played ${nameFull(m)}. It is ${near.label}.`,'bad')}
-  else if(b>-.5)fb(`${nameFull(m)} · wait for the note to reach the blue line.`,'bad');
+  if(near){near.wrong=1;(G.round.conf||(G.round.conf={}))[near.label]=[...((G.round.conf||{})[near.label]||[]),nameM(m)];fb('Wrong key','bad')}
+  else if(b>-.5)fb('Wait for the line','bad');
 }
 function tempoRelease(m,src){
   if(!ctx||SC.paused)return;const b=nowBeat(ctx.currentTime-(src==='mic'?S.micLag/1000:0));
   for(const c of SC.notes){if(c.hit&&c.m===m&&c.src===src&&c.relB==null){c.relB=b;
-    if(!c.res&&holdOn(c)&&b-c.hitB<holdNeed(c)){c.short=true;tempoFinal(c);fb(`${c.label} · hold longer (${{e:'½',q:'1',h:'2',w:'4'}[c.dur]}${c.dot?' + ½':''} beat${c.d>1?'s':''})`,'bad')}}}
+    if(!c.res&&holdOn(c)&&b-c.hitB<holdNeed(c)){c.short=true;tempoFinal(c);fb('Hold longer','bad')}}}
 }
 function tempoFinal(c){
   if(c.res)return;const st=SC.st;
@@ -1128,7 +1256,7 @@ function drawTempo(b){
 }
 function tempoSum(){
   if(!(G.mode==='scroll'&&SC.tempo))return '';const t=SC.st,ms=t.ms,avg=ms.length?Math.round(ms.reduce((a,b)=>a+b,0)/ms.length):0;
-  const tip=Math.abs(avg)<40?'Your timing is centred. Good.':avg>0?`On average you play ${avg} ms late.`+(MIC.on?' If it feels on time, raise "Piano input delay" in Scroll.':' Count the beat out loud.'):`On average you play ${-avg} ms early. Wait for the blue line.`;
+  const tip=Math.abs(avg)<40?'Your timing is centred. Good.':avg>0?`On average you play ${avg} ms late.`+(MIC.on?' If it feels on time, raise "Input delay" in Set up my piano → Advanced.':' Count the beat out loud.'):`On average you play ${-avg} ms early. Wait for the blue line.`;
   return `<h3>Timing · ${SC.bpm} bpm</h3><pre class="tip">On time  ${t.ok}
 Early    ${t.early}
 Late     ${t.late}
@@ -1205,7 +1333,7 @@ function metStart(){ac();MET.on=true;MET.beat=0;MET.next=ctx.currentTime+.08;
 function metStop(){MET.on=false;clearInterval(MET.timer);MET.shown=-1;metShow(-1);renderMet()}
 function metToggle(){MET.on?metStop():metStart()}
 function metShow(b){if(!MET.on&&b>=0)return;MET.shown=b;const bt=$('bMet');
-  bt.classList.toggle('live',MET.on);bt.textContent=MET.on?`⏱ ${MET.bpm} · ${'●'.repeat(b+1)}${'○'.repeat(MET.beats-b-1)}`:'⏱';
+  bt.classList.toggle('live',MET.on);bt.style.display=MET.on?'':'none';bt.textContent=MET.on?`⏱ ${MET.bpm} · ${'●'.repeat(b+1)}${'○'.repeat(MET.beats-b-1)}`:'⏱';
   document.querySelectorAll('#metDots span').forEach((e,i)=>e.classList.toggle('on',i===b))}
 function metSet(bpm){MET.bpm=Math.min(200,Math.max(30,Math.round(bpm)));S.bpm=MET.bpm;saveS();renderMet()}
 function renderMet(){
@@ -1218,7 +1346,7 @@ function renderMet(){
 <label class="set">Beats in a bar <select id="mtBeats">${[2,3,4,6].map(v=>`<option value="${v}" ${MET.beats==v?'selected':''}>${v}</option>`).join('')}</select></label>
 <pre class="tip">Slow: 50–70 · Walking (Andante): 76–100 · Fast (Allegro): 120+
 Beat 1 is the higher tick. Key M = start / stop.</pre>
-<div class="row"><button class="pri" id="mtGo">${MET.on?'■ Stop':'▶ Start'}</button><button onclick="close('ovMet')">Close</button></div>`;
+<div class="row"><button class="pri" id="mtGo">${MET.on?'■ Stop':'▶ Start'}</button><button data-close="ovMet">Close</button></div>`;
   $('mtGo').onclick=metToggle;
   [['mtM5',-5],['mtM1',-1],['mtP1',1],['mtP5',5]].forEach(([id,d])=>$(id).onclick=()=>metSet(MET.bpm+d));
   $('mtBpm').oninput=e=>{MET.bpm=+e.target.value;S.bpm=MET.bpm;saveS();document.querySelector('.bpm').firstChild.textContent=MET.bpm+' '};
@@ -1239,7 +1367,7 @@ function openHello(){
 }
 // ---------- app: Home → 1 Set up · 2 Learn to read · 3 Play songs · 4 Free play · Tools ----------
 if(!P.songs)P.songs={};
-const APP={scr:'home',from:'home',song:null};
+const APP={scr:'home',from:'home',song:null,c4:!!S.c4};
 const SONGLV={1:1,2:2,3:3,4:4,5:6,6:7};   // song level → reading level that makes you ready
 const SONGTXT={1:'C4 to G4 · right hand',2:'C4 to C5',3:'Full treble staff',4:'Left hand · bass',5:'Both hands · grand staff',6:'Sharps and flats'};
 const songLv=n=>{const m=n.match(/^S(\d+)-/i);return m?+m[1]:0};
@@ -1253,7 +1381,7 @@ function showApp(on){const h=document.documentElement;h.classList.toggle('home',
 function go(scr){
   tempoStop();releaseAll();clearTimer();clearHints();playView(0);
   document.querySelectorAll('.ov.show').forEach(o=>o.classList.remove('show'));
-  G.mode='menu';G.nextFn=null;APP.scr=scr;showApp(true);render();$('app').scrollTop=0;
+  GREF.back=null;G.mode='menu';G.nextFn=null;APP.scr=scr;showApp(true);render();$('app').scrollTop=0;
 }
 function enter(from){APP.from=from;showApp(false);
   $('bHome').textContent='◀ '+({learn:'Levels',songs:'Songs',home:'Home'}[from]||'Back');$('bHomeH').style.display=from==='home'?'none':''}
@@ -1261,14 +1389,16 @@ const step=(id,n,t,s,done,next)=>`<button class="step${done?' done':''}${next?' 
 const scrTop=(t,sub)=>`<div class="scr-top"><button class="pill" data-go="home">◀ Home</button><h2>${t}</h2></div>${sub?`<p class="sub">${sub}</p>`:''}`;
 function render(){
   const R={home:rHome,setup:rSetup,learn:rLearn,songs:rSongs,prog:rProg}[APP.scr]||rHome;
-  $('app').innerHTML=`<div class="scr">${R()}</div>`;
+  const live=MIC.on&&APP.scr!=='setup'?`<div class="livebar">🎤 Listening to your piano<button id="aMicOff">Stop listening</button></div>`:'';
+  $('app').innerHTML=`<div class="scr">${live}${R()}</div>`;
+  if($('aMicOff'))$('aMicOff').onclick=()=>{micStop();render()};
   $('app').querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{const g=b.dataset.go;if(g==='free'){enter('home');freePlay()}else go(g)});
   (BIND[APP.scr]||(()=>{}))();
 }
 function rHome(){
   const nl=nextLevel(),nL=L.length-1,done=Object.values(P.best).filter(v=>v>=80).length,sp=Object.keys(P.songs).length,su=!!S.setup;
   return `<div class="brandbig"><span class="logo">𝄞</span><div><b>Piano Studio</b><small>Read · Play · Listen</small></div></div>
-${su?`<button class="pri cont" id="hCont">▶ Continue · L${nl} ${L[nl].t}</button>`:''}
+${su?`<button class="pri cont" id="hCont">▶ Next step: L${nl} · ${L[nl].t}</button>`:''}
 <div class="path">
 ${step('setup',1,'Set up my piano',su?(S.input==='piano'?'My piano'+(S.c4?' · C4 heard ✓':''):'Keys only')+' · tap to change':'Start here · 1 minute',su,!su)}
 ${step('learn',2,'Learn to read',`${done} of ${nL} levels done · next: L${nl} ${L[nl].t}`,done>=nL,su&&done<nL)}
@@ -1276,27 +1406,32 @@ ${step('songs',3,'Play songs',`S1 to S6 · ${sp} song${sp===1?'':'s'} played`,fa
 ${step('free',4,'Free play','Press any key, see it on the staff',false,false)}
 </div>
 <div class="grp">Tools</div>
-<div class="tools2"><button id="tMet">⏱ Metronome</button><button id="tRef">📖 Note reference</button><button id="tSet">⚙ Settings</button><button data-go="prog">📊 My progress</button><button id="tDark">${S.dark?'☀️ Light mode':'🌙 Dark mode'}</button></div>`;
+<div class="tools2"><button id="tMet">⏱ Metronome</button><button id="tRef">📖 Music guide</button><button id="tSet">⚙ Settings</button><button data-go="prog">📊 My learning</button><button id="tDark">${S.dark?'☀️ Light mode':'🌙 Dark mode'}</button></div>`;
 }
 function rSetup(){
-  const pi=S.input==='piano';
-  let h=scrTop('1 · Set up my piano','Do this once. Change it any time.')+`<div class="grp">How will you play?</div>
-<div class="two"><button class="item big${S.input==='keys'?' on':''}" id="suKeys"><span class="ic">${PHONE?'📱':'💻'}</span><span class="tx"><b>${PHONE?'Tap the keys':'Laptop keys'}</b><small>${PHONE?'Tap the keys on the screen.':'A S D F … on the keyboard, or click the keys.'}</small></span></button>
-<button class="item big${pi?' on':''}" id="suPiano"><span class="ic">🎹</span><span class="tx"><b>My piano</b><small>Cable or mic. The page listens to your piano.</small></span></button></div>`;
-  if(pi)h+=`<div class="grp">Connect</div><div class="panel"><pre class="tip">Cable: piano PHONES/OUTPUT → laptop mic / line-in jack.
-Mic: put the ${PHONE?'phone':'laptop'} near the piano speaker. Quiet room.
-Piano: voice 001 (Piano). Rhythm and styles off.</pre>
-<div class="row"><button class="${MIC.on?'':'pri'}" id="suMic">${MIC.on?'■ Stop listening':'▶ Start listening'}</button><button id="suMicSet">🎤 Input and sensitivity</button></div></div>
-<div class="grp">Test: play C4 (middle C)</div><div class="panel"><div class="heard" id="suHeard">${MIC.on?(MIC.shown||'—'):'Start listening first'}</div><p class="small" id="suC4" style="text-align:center">${S.c4?'✓ C4 heard. Your piano works.':'Play C4. The big text should show C4.'}</p></div>
-<div class="grp">Input delay (Tempo mode)</div><div class="panel"><label class="set"><input type="range" id="suLag" min="0" max="250" step="10" value="${S.micLag}"> <b id="suLagV">${S.micLag} ms</b></label><p class="small">Start with 90 ms. If Tempo results say you are always late on the real piano, raise it.</p></div>`;
-  if(S.input)h+=`<div class="row" style="margin-top:16px"><button class="pri" id="suDone">✓ Done · go to 2 · Learn to read</button></div>`;
+  const pi=S.input==='piano',cab=S.conn==='cable';
+  let h=scrTop('1 · Set up my piano','Do this once. Change it any time.')+`<div class="grp">Step 1 · How will you play?</div>
+<div class="two"><button class="item big${S.input==='keys'?' on':''}" id="suKeys"><span class="ic">${PHONE?'📱':'💻'}</span><span class="tx"><b>Screen keyboard</b><small>${PHONE?'Tap the keys on the screen.':'Click the keys, or use A S D F … on the laptop.'}</small></span></button>
+<button class="item big${pi?' on':''}" id="suPiano"><span class="ic">🎹</span><span class="tx"><b>My real piano</b><small>The page listens to your piano.</small></span></button></div>`;
+  if(pi){h+=`<div class="grp">Step 2 · How does the sound come in?</div>
+<div class="two"><button class="item${!cab&&S.conn?' on':''}" id="suConMic"><span class="ic">🎤</span><span class="tx"><b>Microphone</b><small>Put the ${PHONE?'phone':'laptop'} near the piano speaker. Quiet room.</small></span></button>
+<button class="item${cab?' on':''}" id="suConCab"><span class="ic">🔌</span><span class="tx"><b>Cable</b><small>Piano PHONES/OUTPUT → ${PHONE?'phone':'laptop'} audio input.</small></span></button></div>`;
+  if(S.conn)h+=`<div class="panel"><label class="set">Input <select id="suDev"><option value="">Default</option>${DEVS.map(d=>`<option value="${d.deviceId}" ${S.dev===d.deviceId?'selected':''}>${d.label||'Input'}</option>`).join('')}</select></label>
+<div class="row"><button class="${MIC.on?'':'pri'}" id="suMic">${MIC.on?'■ Stop listening':'▶ Start listening'}</button></div><p class="small">Piano: voice 001 (Piano). Rhythm and styles off.</p></div>
+<div class="grp">Step 3 · Play middle C (C4)</div><div class="panel"><div class="heard" id="suHeard">${MIC.on?(MIC.shown||'—'):'Start listening first'}</div><p class="small" id="suC4" style="text-align:center">${APP.c4?'✓ C4 detected. Your piano works.':'Play C4 firmly. The big text should show C4.'}</p></div>
+<details class="adv"><summary>Advanced settings</summary><div class="panel">
+<label class="set">Sensitivity <input type="range" id="suSens" min="0" max="1" step="0.05" value="${S.sens}"></label><p class="small">Raise if soft notes are missed. Lower if noise is heard as notes.</p>
+<label class="set">Input delay <input type="range" id="suLag" min="0" max="250" step="10" value="${S.micLag}"> <b id="suLagV">${S.micLag} ms</b></label><p class="small">For "Play with the beat". Start at 90 ms. Raise it if results say you are always late.</p>
+<label class="set"><input type="checkbox" id="suMon" ${S.monitor?'checked':''}> Play the piano sound on the ${PHONE?'phone':'laptop'} speakers (cable only — with a mic it will howl)</label>
+</div></details>`}
+  if(S.input==='keys'||(pi&&S.conn))h+=`<div class="row" style="margin-top:16px"><button class="pri" id="suDone">${S.input==='keys'||APP.c4?'✓ Continue to learning':'Skip the test · Continue'}</button></div>`;
   return h;
 }
-function setupHeard(m){const h=$('suHeard');if(h)h.textContent=nameFull(m);if(m===60&&!S.c4){S.c4=1;saveS();const c=$('suC4');if(c)c.textContent='✓ C4 heard. Your piano works.'}}
+function setupHeard(m){const h=$('suHeard');if(h)h.textContent=nameFull(m);if(m===60&&!APP.c4){APP.c4=1;S.c4=1;saveS();render()}}
 function rLearn(){
   let h=scrTop('2 · Learn to read','Each level: Learn card → 20 questions → result. 80% right on the first try opens the next level.')+'<div class="list">';
   for(let i=1;i<L.length;i++){const o=lvOpen(i),b=P.best[i];
-    h+=`<div class="lrow"><button class="item${b>=80?' done':''}" data-lv="${i}" ${o?'':'disabled'}><span class="num">${b>=80?'✓':o?i:'🔒'}</span><span class="tx"><b>L${i} · ${L[i].t}</b><small>${b!=null?'Best '+b+'%':o?'Not tried':'Opens at 80% in L'+(i-1)}</small></span><span class="go">›</span></button><button class="sc" data-sc="${i}" ${o?'':'disabled'} title="Notes move, play the blue note">▶ Scroll</button></div>`}
+    h+=`<div class="lrow"><button class="item${b>=80?' done':''}" data-lv="${i}" ${o?'':'disabled'}><span class="num">${b>=80?'✓':o?i:'🔒'}</span><span class="tx"><b>L${i} · ${L[i].t}</b><small>${b!=null?'Best '+b+'%':o?'Not tried':'Opens at 80% in L'+(i-1)}</small></span><span class="go">›</span></button><button class="sc" data-sc="${i}" ${o?'':'disabled'} title="Notes move, play the blue note">▶ Play along</button></div>`}
   return h+'</div>';
 }
 function songSrc(){
@@ -1310,10 +1445,10 @@ function songSrc(){
 function rSongs(){
   const t=S.scMode==='tempo';
   let h=scrTop('3 · Play songs','Pick a song. "✓ ready" = you passed the reading level it needs. All songs stay open.')+
-`<div class="opts"><span class="seg"><button data-m="wait" class="${t?'':'on'}">Wait</button><button data-m="tempo" class="${t?'on':''}">Tempo</button></span>
+`<div class="opts"><span class="seg"><button data-m="wait" class="${t?'':'on'}">No rush</button><button data-m="tempo" class="${t?'on':''}">Play with the beat</button></span>
 ${t?`<label>Speed <select id="aPct">${[50,60,75,90,100].map(v=>`<option value="${v}" ${S.tPct==v?'selected':''}>${v}%</option>`).join('')}</select></label><label>Count-in <select id="aCin">${[1,2].map(v=>`<option value="${v}" ${S.tCount==v?'selected':''}>${v} bar${v>1?'s':''}</option>`).join('')}</select></label>`:''}
 <label><input type="checkbox" id="aNames" ${S.staffNames?'checked':''}> Names on staff</label><label><input type="checkbox" id="aHint" ${S.keyHint?'checked':''}> Show next key</label></div>
-<p class="sub">${t?'Tempo: notes move with the beat. Play when the note reaches the blue line.':'Wait: the note waits for you.'}</p>`+songSrc();
+${S.lastPlayed&&songFiles().includes(S.lastPlayed)?`<button class="pri cont" data-song="${S.lastPlayed}">▶ Play again: ${songName(S.lastPlayed)}</button>`:''}<p class="sub">${t?'Play with the beat: notes move with the beat. Play when a note reaches the blue line.':'No rush: each note waits for you.'}</p>`+songSrc();
   const f=songFiles();
   if(f.length){const by={};f.forEach(n=>{const k=songLv(n);(by[k]=by[k]||[]).push(n)});
     Object.keys(by).map(Number).sort((a,b)=>(a||99)-(b||99)).forEach(k=>{
@@ -1321,32 +1456,39 @@ ${t?`<label>Speed <select id="aPct">${[50,60,75,90,100].map(v=>`<option value="$
       by[k].map(n=>{const b=P.songs[n];return `<button class="item${b>=80?' done':''}" data-song="${n}"><span class="num">${b>=80?'✓':'♪'}</span><span class="tx"><b>${songName(n)}</b><small>${b!=null?'Best '+b+'%':'Not played'}</small></span><span class="go">▶</span></button>`}).join('')+'</div>'})}
   return h+`<div class="grp">Or load one file</div><div class="panel"><input type="file" id="aFile" accept=".md,.txt"> <span class="small" id="aMsg"></span></div>`;
 }
-async function playSong(n){const m=$('aMsg2');
+async function playSong(n){const m=$('aMsg2');S.lastPlayed=n;saveS();
   try{const sg=WEB.on?await webLoad(WEB.files.find(f=>f.name===n)):await libLoad(n);
     if(!sg){if(m)m.textContent='No notes found in '+n;else go('songs');return}
     APP.song=n;enter('songs');startScroll('song');if(sg.bad.length)fb('Skipped (not understood): '+sg.bad.slice(0,8).join(' '),'bad')}
   catch(e){if(m)m.textContent='Could not load '+n+'. Press ↻.';else go('songs')}}
 function rProg(){
-  let h=scrTop('My progress')+'<div class="grp">Reading levels</div><div class="list">';
-  for(let i=1;i<L.length;i++){const b=P.best[i];h+=`<div class="item"><span class="num">${b>=80?'✓':i}</span><span class="tx"><b>L${i} · ${L[i].t}</b></span><span class="r">${b!=null?b+'%':'—'}</span></div>`}
+  let h=scrTop('My learning')+'<div class="grp">Reading levels</div><div class="list">';
+  for(let i=1;i<L.length;i++){const b=P.best[i];h+=`<button class="item" data-plv="${i}" ${lvOpen(i)?'':'disabled'}><span class="num">${b>=80?'✓':lvOpen(i)?i:'🔒'}</span><span class="tx"><b>L${i} · ${L[i].t}</b></span><span class="r">${b!=null?b+'%':'—'} ›</span></button>`}
   h+='</div><div class="grp">Songs</div><div class="list">';
   const s=Object.entries(P.songs).sort((a,b)=>a[0].localeCompare(b[0]));
-  h+=s.length?s.map(([n,b])=>`<div class="item"><span class="num">${b>=80?'✓':'♪'}</span><span class="tx"><b>${(songLv(n)?'S'+songLv(n)+' · ':'')+songName(n)}</b></span><span class="r">${b}%</span></div>`).join(''):'<p class="sub">No songs played yet.</p>';
+  h+=s.length?s.map(([n,b])=>`<button class="item" data-psong="${n}"><span class="num">${b>=80?'✓':'♪'}</span><span class="tx"><b>${(songLv(n)?'S'+songLv(n)+' · ':'')+songName(n)}</b></span><span class="r">${b}% ▶</span></button>`).join(''):'<p class="sub">No songs played yet.</p>';
   h+='</div>';
   const miss=Object.entries(P.miss).sort((a,b)=>b[1]-a[1]).slice(0,8);
   if(miss.length)h+=`<div class="grp">Notes you miss most</div><pre class="tip">${miss.map(([k,v])=>'L'+k.replace(':',' · ')+'  ×'+v).join('\n')}</pre>`;
   return h;
 }
 const BIND={
+  prog(){document.querySelectorAll('[data-plv]').forEach(b=>b.onclick=()=>{enter('learn');setLevel(+b.dataset.plv)});
+    document.querySelectorAll('[data-psong]').forEach(b=>b.onclick=()=>{if(WEB.on&&!WEB.files){go('songs');return}playSong(b.dataset.psong)})},
   home(){if($('hCont'))$('hCont').onclick=()=>{enter('learn');setLevel(nextLevel())};
     $('tMet').onclick=()=>{$('ovMet').classList.add('show');renderMet()};
     $('tRef').onclick=openRef;$('tSet').onclick=openSet;
     $('tDark').onclick=()=>{S.dark=!S.dark;saveS();darkIcon();render()}},
   setup(){$('suKeys').onclick=()=>{S.input='keys';S.setup=1;saveS();render()};
     $('suPiano').onclick=()=>{S.input='piano';saveS();render()};
+    if(S.input==='piano'&&!APP.devs){APP.devs=1;fillDevices().then(()=>{if(G.mode==='menu'&&APP.scr==='setup')render()})}
+    if($('suConMic'))$('suConMic').onclick=()=>{if(S.conn!=='mic'){APP.c4=false;S.c4=0}S.conn='mic';S.monitor=false;saveS();if(MIC.mon)MIC.mon.gain.value=0;render()};
+    if($('suConCab'))$('suConCab').onclick=()=>{if(S.conn!=='cable'){APP.c4=false;S.c4=0}S.conn='cable';saveS();render()};
+    if($('suDev'))$('suDev').onchange=async e=>{S.dev=e.target.value;APP.c4=false;S.c4=0;saveS();if(MIC.on){micStop();await micStart()}render()};
     if($('suMic'))$('suMic').onclick=async()=>{MIC.on?micStop():await micStart();render()};
-    if($('suMicSet'))$('suMicSet').onclick=async()=>{await fillDevices();renderMic();open('ovMic')};
+    if($('suSens'))$('suSens').oninput=e=>{S.sens=+e.target.value;saveS()};
     if($('suLag'))$('suLag').oninput=e=>{S.micLag=+e.target.value;saveS();$('suLagV').textContent=S.micLag+' ms'};
+    if($('suMon'))$('suMon').onchange=e=>{S.monitor=e.target.checked;saveS();if(MIC.mon)MIC.mon.gain.value=S.monitor?1:0};
     if($('suDone'))$('suDone').onclick=()=>{S.setup=1;saveS();go('learn')}},
   learn(){document.querySelectorAll('[data-lv]').forEach(b=>b.onclick=()=>{enter('learn');setLevel(+b.dataset.lv)});
     document.querySelectorAll('[data-sc]').forEach(b=>b.onclick=()=>{enter('learn');G.lv=+b.dataset.sc;startScroll('level')})},
@@ -1364,7 +1506,17 @@ const BIND={
         if(!sg.title)sg.title=f.name.replace(/\.(md|txt)$/i,'');SC.song=sg;store('song',{txt:rd.result,name:f.name});APP.song=null;enter('songs');startScroll('song')};
       rd.readAsText(f)}}
 };
+function openMenu(){const lv=G.mode==='level';
+  const it=[['🎤',MIC.on?'Piano input (listening)':'Piano input',()=>$('bMic').click()],['⏱',MET.on?'Metronome (on)':'Metronome',()=>$('bMet').click()],['📖','Music guide',()=>openRef()],
+    (lv||G.mode==='scroll')&&['↺','Restart',restart],(lv||G.mode==='scroll')&&G.round.n>0&&['■','Finish & review',finishEarly],lv&&['💡','Learn this level',()=>openLearn()],lv&&['📋','Change level',()=>{renderLevels();open('ovLv')}],
+    ['⚙','Settings',()=>openSet()],[S.dark?'☀️':'🌙',S.dark?'Light mode':'Dark mode',()=>$('bDark').click()],[S.mute?'🔇':'🔊',S.mute?'Sound is off · turn on':'Sound is on · turn off',()=>$('bMute').click()],
+    PHONE&&['⛶','Full screen',()=>$('bFull').click()],['⌂','Home',()=>go('home')]].filter(Boolean);
+  $('menuBox').innerHTML=`<h2>Menu</h2><div class="mlist">${it.map((x,i)=>`<button data-i="${i}"><span class="mi">${x[0]}</span>${x[1]}</button>`).join('')}</div><div class="row"><button class="pri" data-close="ovMenu">Close</button></div>`;
+  $('menuBox').querySelectorAll('[data-i]').forEach(b=>b.onclick=()=>{close('ovMenu');it[+b.dataset.i][2]()});
+  open('ovMenu')}
+$('bMenu').onclick=openMenu;
 $('bHome').onclick=()=>go(APP.from);$('bHomeH').onclick=()=>go('home');
+document.querySelectorAll('button[title]').forEach(b=>{if(!b.getAttribute('aria-label'))b.setAttribute('aria-label',b.title)});
 // ---------- start ----------
 buildKeys();muteIcon();darkIcon();
 if(PHONE){$('bFull').onclick=async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else{await document.documentElement.requestFullscreen();try{await screen.orientation.lock('landscape')}catch(e){}}}catch(e){}};
