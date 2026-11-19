@@ -826,7 +826,7 @@ function analyse(){
   MIC.quiet=0;
   if(rs>low*1.45&&rs-low>gate*.8&&Date.now()-(MIC.lastAt||0)>120&&Date.now()-(MIC.emitAt||0)>300){MIC.emitted=null;MIC.stable=0;MIC.lastAt=Date.now();hist.length=0;hist.push(rs)}   // same note pressed again
   const y=yin(MIC.buf,ctx.sampleRate);if(!y)return;
-  let f=y.f;if(f>250&&f<470&&octLow(MIC.buf,f,ctx.sampleRate))f/=2;   // E3–A3: the piano speaker gives a weak fundamental, YIN reads one octave up
+  let f=y.f;if(f>305&&f<470&&octLow(MIC.buf,f,ctx.sampleRate))f/=2;   // E3–A3: the piano speaker gives a weak fundamental, YIN reads one octave up
   const mf=69+12*Math.log2(f/440),m=Math.round(mf);if(m<LOW||m>HIGH)return;
   if(MIC.emitted!=null&&Math.abs(m-MIC.emitted)===12)return;          // octave jump with no new key press = decay noise
   if(m===MIC.cand)MIC.stable++;else{MIC.cand=m;MIC.stable=1}
