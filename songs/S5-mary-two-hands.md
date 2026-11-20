@@ -2,7 +2,7 @@
 clef: grand
 tempo: 80
 
-E4 D4 C4 D4 | E4 E4 E4:h |
-D3 D3 D3:h | E3 G3 G3:h |
-E4 D4 C4 D4 | E4 E4 E4 E4 |
-D3 D3 E3 D3 | C3:w |
+E4/3 D4/2 C4/1 D4/2 | E4/3 E4/3 E4:h/3 |
+D3/4 D3/4 D3:h/4 | E3/3 G3/1 G3:h/1 |
+E4/3 D4/2 C4/1 D4/2 | E4/3 E4/3 E4/3 E4/3 |
+D3/4 D3/4 E3/3 D3/4 | C3:w/5 |

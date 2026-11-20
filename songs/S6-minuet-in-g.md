@@ -2,7 +2,7 @@
 clef: treble
 tempo: 100
 
-D5 G4:e A4:e B4:e C5:e | D5 G4 G4 | E5 C5:e D5:e E5:e F#5:e | G5 G4 G4 |
-C5 D5:e C5:e B4:e A4:e | B4 C5:e B4:e A4:e G4:e | F#4 G4:e A4:e B4:e G4:e | A4:h. |
-D5 G4:e A4:e B4:e C5:e | D5 G4 G4 | E5 C5:e D5:e E5:e F#5:e | G5 G4 G4 |
-C5 D5:e C5:e B4:e A4:e | B4 C5:e B4:e A4:e G4:e | A4 B4:e A4:e G4:e F#4:e | G4:h. |
+D5/5 G4:e/1 A4:e/2 B4:e/3 C5:e/4 | D5/5 G4/1 G4/1 | E5/3 C5:e/1 D5:e/2 E5:e/3 F#5:e/4 | G5/5 G4/1 G4/1 |
+C5/4 D5:e/5 C5:e/4 B4:e/3 A4:e/2 | B4/3 C5:e/4 B4:e/3 A4:e/2 G4:e/1 | F#4/2 G4:e/1 A4:e/2 B4:e/3 G4:e/1 | A4:h./2 |
+D5/5 G4:e/1 A4:e/2 B4:e/3 C5:e/4 | D5/5 G4/1 G4/1 | E5/3 C5:e/1 D5:e/2 E5:e/3 F#5:e/4 | G5/5 G4/1 G4/1 |
+C5/4 D5:e/5 C5:e/4 B4:e/3 A4:e/2 | B4/3 C5:e/4 B4:e/3 A4:e/2 G4:e/1 | A4/3 B4:e/4 A4:e/3 G4:e/2 F#4:e/1 | G4:h./2 |

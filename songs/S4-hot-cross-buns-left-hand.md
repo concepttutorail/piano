@@ -2,5 +2,5 @@
 clef: bass
 tempo: 80
 
-E3 D3 C3:h | E3 D3 C3:h |
-C3 C3 D3 D3 | E3 D3 C3:h |
+E3/3 D3/4 C3:h/5 | E3/3 D3/4 C3:h/5 |
+C3/5 C3/5 D3/4 D3/4 | E3/3 D3/4 C3:h/5 |

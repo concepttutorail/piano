@@ -2,5 +2,5 @@
 clef: treble
 tempo: 80
 
-E4 D4 C4:h | E4 D4 C4:h |
-C4 C4 D4 D4 | E4 D4 C4:h |
+E4/3 D4/2 C4:h/1 | E4/3 D4/2 C4:h/1 |
+C4/1 C4/1 D4/2 D4/2 | E4/3 D4/2 C4:h/1 |
