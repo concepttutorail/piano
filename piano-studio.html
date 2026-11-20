@@ -31,6 +31,7 @@ main{max-width:1500px;margin:auto;padding:0 12px 4px}
 .clef{font-family:"Segoe UI Symbol","Noto Music","Bravura Text",serif;fill:#1d2430}
 .ts{font:700 30px Georgia,serif;fill:#1d2430}
 .lab{font:700 17px system-ui,sans-serif}
+.fing{font:800 16px system-ui,sans-serif;fill:#7b3fbf;stroke:#fff;stroke-width:3px;paint-order:stroke}
 .qbox{fill:#eef3ff;stroke:var(--acc);stroke-width:1.5;stroke-dasharray:4 3}
 .qm{font:700 24px system-ui;fill:var(--acc)}
 #fb{min-height:26px;font-size:19px;font-weight:650;text-align:center;margin-top:4px}
@@ -528,6 +529,8 @@ function noteSVG(nt,c,T){
   if(nt.dot)o+=`<circle cx="${x+15}" cy="${(st-ref)%2===0?y-s/2:y}" r="2.8" fill="${col}"/>`;
   if(nt.label){const ly=(d==='w'||up)?Math.max(y+30,T[c]+4*s+26):Math.min(y-18,T[c]-12);
     o+=`<text class="lab" text-anchor="middle" x="${x}" y="${ly}" fill="${nt.labCol||col}">${nt.label}</text>`}
+  if(nt.fing){const fx=d==='w'?x:up?x+6.7:x-6.7,fy=(d==='w'||up)?Math.max(d==='w'?y-14:y-3.5*s-7,T[c]-30):Math.min(y+3.5*s+19,T[c]+4*s+44);
+    o+=`<text class="fing" text-anchor="middle" x="${fx}" y="${fy}">${nt.fing}</text>`}
   return o;
 }
 function restSVG(nt,top){
@@ -567,8 +570,8 @@ function renderLevels(){
 function actions(list){const e=$('actions');e.innerHTML='';list.forEach(([t,f,cls])=>{const b=document.createElement('button');b.textContent=t;if(cls)b.className=cls;b.onclick=f;e.append(b)})}
 function stdActions(){
   if(G.mode==='scroll'&&SC.tempo&&PHONE&&!SC.done&&!SC.paused)return actions([['⏸ Pause',tempoPause],['↺ Restart',restart]]);
-  if(G.mode==='scroll'&&SC.tempo)return actions(SC.done?[]:[SC.paused?['▶ Go on'+(PHONE?'':' (Space)'),tempoResume,'pri']:['⏸ Pause'+(PHONE?'':' (Space)'),tempoPause],['⏪ Back 20 s'+(PHONE?'':' (B)'),()=>tempoBack(20)],['↺ Restart',restart],['📖 Guide',openRef],['■ Finish & review',finishEarly]]);
-  if(G.mode==='scroll'){const a=[['🔊 Hear next 4',hearAhead],['❓ Show answer',giveUp],['↺ Restart',restart],['■ Finish & review',finishEarly]];if(G.nextFn)a.push(['Next ▶ (Space)',G.nextFn,'pri']);return actions(a)}
+  if(G.mode==='scroll'&&SC.tempo)return actions(SC.done?[]:[SC.paused?['▶ Go on'+(PHONE?'':' (Space)'),tempoResume,'pri']:['⏸ Pause'+(PHONE?'':' (Space)'),tempoPause],['⏪ Back 20 s'+(PHONE?'':' (B)'),()=>tempoBack(20)],['↺ Restart',restart],['📖 Guide',openRef],['■ Finish & review',finishEarly]].concat(SC.done||!hasFing()?[]:[fingBtn()]));
+  if(G.mode==='scroll'){const a=[['🔊 Hear next 4',hearAhead],...(hasFing()?[fingBtn()]:[]),['❓ Show answer',giveUp],['↺ Restart',restart],['■ Finish & review',finishEarly]];if(G.nextFn)a.push(['Next ▶ (Space)',G.nextFn,'pri']);return actions(a)}
   const d=L[G.lv],btn=[['🔊 Listen',listen],['❓ Show answer',giveUp]];
   if(d.type==='val'||d.type==='bar')btn[1]=['❓ Show answer',giveUp];
   if(G.nextFn)btn.push(['Next ▶ (Space)',G.nextFn,'pri']);
@@ -1008,7 +1011,9 @@ $('bMic').onclick=async()=>{await fillDevices();renderMic();open('ovMic')};
 
 // ---------- scroll practice (wait mode) ----------
 const SC={notes:[],i:0,src:'level',view:'treble',sig:null,ks:null,title:'',shift:0,raf:0,song:null};
-if(S.staffNames==null)S.staffNames=false;if(S.keyHint==null)S.keyHint=false;
+if(S.staffNames==null)S.staffNames=false;if(S.fingers==null)S.fingers=true;
+function hasFing(){return G.mode==='scroll'&&SC.notes.some(x=>x.fing)}
+function fingBtn(){return ['✋ Fingers: '+(S.fingers?'on':'off'),()=>{S.fingers=!S.fingers;saveS();draw();stdActions()}]}if(S.keyHint==null)S.keyHint=false;
 function parseSong(txt){
   const out={title:'',notes:[],bad:[],view:null};
   for(const line of txt.split(/\r?\n/)){
@@ -1022,11 +1027,11 @@ function parseSong(txt){
       if(tok==='|'){if(out.notes.length)out.notes[out.notes.length-1].bar=1;continue}
       const r=tok.match(/^(?:R|-|rest)(?::?([whqe])(\.)?)?$/i);
       if(r){out.notes.push({rest:1,dur:(r[1]||'q').toLowerCase(),dot:!!r[2]});continue}
-      const m=tok.match(/^([A-Ga-g])([#b♯♭]?)([0-8])(?::?([whqeWHQE])(\.)?)?$/);
+      const m=tok.match(/^([A-Ga-g])([#b♯♭]?)([0-8])(?::?([whqeWHQE])(\.)?)?(?:\/([1-5]))?$/);
       if(!m){out.bad.push(tok);continue}
       const n={L:m[1].toUpperCase(),o:+m[3],a:m[2]==='#'||m[2]==='♯'?1:m[2]?-1:0};
       if(midiOf(n)<LOW||midiOf(n)>HIGH){out.bad.push(tok);continue}
-      out.notes.push({n,real:n,dur:(m[4]||'q').toLowerCase(),dot:!!m[5],label:nameN(n)});
+      out.notes.push({n,real:n,dur:(m[4]||'q').toLowerCase(),dot:!!m[5],label:nameN(n),fing:m[6]?+m[6]:0});
     }
   }
   if(!out.view){const ms=out.notes.filter(x=>!x.rest).map(x=>midiOf(x.real));
@@ -1076,6 +1081,7 @@ function drawScroll(){
     else{const nt={n:c.n,x,dur:c.dur,dot:c.dot,color:col};if(!g)nt.clef=SC.view;
       if(k===SC.i&&G.phase==='answer'){nt.label=c.label;nt.labCol='#d64545'}
       else if(S.staffNames&&k>=SC.i){nt.label=c.label;nt.labCol='#6b7380'}
+      if(S.fingers&&c.fing)nt.fing=c.fing;
       notes.push(nt)}
     if(c.bar&&x+SP/2<SW-12)bars.push(x+SP/2);
   }
@@ -1246,6 +1252,7 @@ function drawTempo(b){
     if(c.rest){notes.push({x,rest:1,dur:c.dur,color:'#1d2430',clef:SC.view==='bass'?'bass':'treble'});continue}
     const nt={n:c.n,x,dur:c.dur,dot:c.dot,color:col};if(!g)nt.clef=SC.view;
     if(c.tag){nt.label=c.tag;nt.labCol=col}else if(S.staffNames&&!c.res){nt.label=c.label;nt.labCol='#6b7380'}
+    if(S.fingers&&c.fing)nt.fing=c.fing;
     notes.push(nt);
     const cl=g?(midiOf(c.n)>=60?'treble':'bass'):SC.view,y=yOf(stepOf(c.n),cl,T),w=xe-x-24;
     if(w>4){ext+=`<rect x="${x+12}" y="${y-2}" width="${w}" height="4" rx="2" fill="${col}" opacity=".22"/>`;
