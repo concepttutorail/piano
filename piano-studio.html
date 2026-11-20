@@ -941,7 +941,7 @@ function yin(b,sr){
 // strength of one frequency in the buffer (Goertzel-style DFT, Hann window)
 function gz(b,f,sr){let re=0,im=0;const n=b.length,w=2*Math.PI*f/sr,k=2*Math.PI/(n-1);for(let i=0;i<n;i++){const v=b[i]*(.5-.5*Math.cos(k*i));re+=v*Math.cos(w*i);im-=v*Math.sin(w*i)}return Math.hypot(re,im)}
 // true pitch is one octave lower if there is energy at f/2 and 3f/2
-function octLow(b,f,sr){return (gz(b,f/2,sr)+gz(b,1.5*f,sr))/Math.max(gz(b,f,sr),1e-9)>.11}
+function octLow(b,f,sr){return (gz(b,f/2,sr)+gz(b,1.5*f,sr))/Math.max(gz(b,f,sr),1e-9)>.08}
 function analyse(){
   if(!MIC.on)return;MIC.an.getFloatTimeDomainData(MIC.buf);
   let r=0;for(const v of MIC.buf)r+=v*v;r=Math.sqrt(r/MIC.buf.length);
@@ -954,11 +954,11 @@ function analyse(){
   MIC.quiet=0;
   if(rs>low*1.45&&rs-low>gate*.8&&Date.now()-(MIC.lastAt||0)>120&&Date.now()-(MIC.emitAt||0)>300){MIC.emitted=null;MIC.stable=0;MIC.lastAt=Date.now();hist.length=0;hist.push(rs)}   // same note pressed again
   const y=yin(MIC.buf,ctx.sampleRate);if(!y)return;
-  let f=y.f;if(f>305&&f<470&&octLow(MIC.buf,f,ctx.sampleRate))f/=2;   // E3–A3: the piano speaker gives a weak fundamental, YIN reads one octave up
+  let f=y.f,dn=false;if(f>235&&f<485&&octLow(MIC.buf,f,ctx.sampleRate)){f/=2;dn=true}   // B2–A#3: weak fundamental, YIN reads one octave up; checked at f/2 and 3f/2
   const mf=69+12*Math.log2(f/440),m=Math.round(mf);if(m<LOW||m>HIGH)return;
   if(MIC.emitted!=null&&Math.abs(m-MIC.emitted)===12)return;          // octave jump with no new key press = decay noise
   if(m===MIC.cand)MIC.stable++;else{MIC.cand=m;MIC.stable=1}
-  if(MIC.stable>=2&&m!==MIC.emitted&&Date.now()>MIC.lock){MIC.emitted=m;MIC.emitAt=Date.now();heard(m,Math.round((mf-m)*100))}
+  if(MIC.stable>=(dn?3:2)&&m!==MIC.emitted&&Date.now()>MIC.lock){MIC.emitted=m;MIC.emitAt=Date.now();heard(m,Math.round((mf-m)*100))}
 }
 function micPill(){$('bMic').textContent=MIC.on?`🎤 Listening${MIC.last?' · '+MIC.last:''}`:'🎤 Piano: off'}
 function heard(m,cents){if(G.mode==='menu'&&APP.scr==='setup')setupHeard(m);
@@ -1418,8 +1418,9 @@ function rSetup(){
 <button class="item${cab?' on':''}" id="suConCab"><span class="ic">🔌</span><span class="tx"><b>Cable</b><small>Piano PHONES/OUTPUT → ${PHONE?'phone':'laptop'} audio input.</small></span></button></div>`;
   if(S.conn)h+=`<div class="panel"><label class="set">Input <select id="suDev"><option value="">Default</option>${DEVS.map(d=>`<option value="${d.deviceId}" ${S.dev===d.deviceId?'selected':''}>${d.label||'Input'}</option>`).join('')}</select></label>
 <div class="row"><button class="${MIC.on?'':'pri'}" id="suMic">${MIC.on?'■ Stop listening':'▶ Start listening'}</button></div><p class="small">Piano: voice 001 (Piano). Rhythm and styles off.</p></div>
-<div class="grp">Step 3 · Play middle C (C4)</div><div class="panel"><div class="heard" id="suHeard">${MIC.on?(MIC.shown||'—'):'Start listening first'}</div><p class="small" id="suC4" style="text-align:center">${APP.c4?'✓ C4 detected. Your piano works.':'Play C4 firmly. The big text should show C4.'}</p></div>
+<div class="grp">Step 3 · Play middle C (C4)</div><div class="panel"><div class="heard" id="suHeard">${MIC.on?(MIC.shown||'—'):'Start listening first'}</div><p class="small" style="text-align:center">Heard: <b id="suLog">${(APP.log||[]).join('  ')||'—'}</b></p><p class="small" id="suC4" style="text-align:center">${APP.c4?'✓ C4 detected. Your piano works.':'Play C4 firmly. The big text should show C4.'}</p></div>
 <details class="adv"><summary>Advanced settings</summary><div class="panel">
+<div class="row"><button id="suRec" ${APP.rec?'disabled':''}>${APP.rec?'● Recording… play the keys that fail':'🎙 Record a 15 s test file'}</button></div><p class="small">Saves exactly what the app hears. Use it when a key is read wrong, and send the file.</p>
 <label class="set">Sensitivity <input type="range" id="suSens" min="0" max="1" step="0.05" value="${S.sens}"></label><p class="small">Raise if soft notes are missed. Lower if noise is heard as notes.</p>
 <label class="set">Input delay <input type="range" id="suLag" min="0" max="250" step="10" value="${S.micLag}"> <b id="suLagV">${S.micLag} ms</b></label><p class="small">For "Play with the beat". Start at 90 ms. Raise it if results say you are always late.</p>
 <label class="set"><input type="checkbox" id="suMon" ${S.monitor?'checked':''}> Play the piano sound on the ${PHONE?'phone':'laptop'} speakers (cable only — with a mic it will howl)</label>
@@ -1427,7 +1428,13 @@ function rSetup(){
   if(S.input==='keys'||(pi&&S.conn))h+=`<div class="row" style="margin-top:16px"><button class="pri" id="suDone">${S.input==='keys'||APP.c4?'✓ Continue to learning':'Skip the test · Continue'}</button></div>`;
   return h;
 }
-function setupHeard(m){const h=$('suHeard');if(h)h.textContent=nameFull(m);if(m===60&&!APP.c4){APP.c4=1;S.c4=1;saveS();render()}}
+async function recTest(){if(APP.rec)return;if(!MIC.on)await micStart();if(!MIC.stream||!window.MediaRecorder){alert2('Recording is not supported in this browser.');return}
+  const mr=new MediaRecorder(MIC.stream),ch=[];mr.ondataavailable=e=>{if(e.data.size)ch.push(e.data)};
+  mr.onstop=()=>{const t=mr.mimeType||'audio/webm',b=new Blob(ch,{type:t}),a=document.createElement('a');a.href=URL.createObjectURL(b);
+    a.download='piano-test-'+new Date().toISOString().slice(0,16).replace(/[:T]/g,'-')+(t.includes('ogg')?'.ogg':t.includes('mp4')?'.m4a':'.webm');document.body.append(a);a.click();a.remove();APP.rec=0;if(APP.scr==='setup'&&G.mode==='menu')render()};
+  mr.start();APP.rec=1;render();setTimeout(()=>{try{mr.stop()}catch(e){}},15000)}
+function alert2(t){const e=$('suC4');if(e)e.textContent=t}
+function setupHeard(m){const h=$('suHeard');if(h)h.textContent=nameFull(m);const lg=APP.log||(APP.log=[]);lg.push(nameM(m));if(lg.length>14)lg.shift();const le=$('suLog');if(le)le.textContent=lg.join('  ');if(m===60&&!APP.c4){APP.c4=1;S.c4=1;saveS();render()}}
 function rLearn(){
   let h=scrTop('2 · Learn to read','Each level: Learn card → 20 questions → result. 80% right on the first try opens the next level.')+'<div class="list">';
   for(let i=1;i<L.length;i++){const o=lvOpen(i),b=P.best[i];
@@ -1486,6 +1493,7 @@ const BIND={
     if($('suConCab'))$('suConCab').onclick=()=>{if(S.conn!=='cable'){APP.c4=false;S.c4=0}S.conn='cable';saveS();render()};
     if($('suDev'))$('suDev').onchange=async e=>{S.dev=e.target.value;APP.c4=false;S.c4=0;saveS();if(MIC.on){micStop();await micStart()}render()};
     if($('suMic'))$('suMic').onclick=async()=>{MIC.on?micStop():await micStart();render()};
+    if($('suRec'))$('suRec').onclick=recTest;
     if($('suSens'))$('suSens').oninput=e=>{S.sens=+e.target.value;saveS()};
     if($('suLag'))$('suLag').oninput=e=>{S.micLag=+e.target.value;saveS();$('suLagV').textContent=S.micLag+' ms'};
     if($('suMon'))$('suMon').onchange=e=>{S.monitor=e.target.checked;saveS();if(MIC.mon)MIC.mon.gain.value=S.monitor?1:0};
